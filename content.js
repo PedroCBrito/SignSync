@@ -1,3 +1,9 @@
+const faLink = document.createElement("link");
+faLink.rel = "stylesheet";
+faLink.href = chrome.runtime.getURL("libraries/fontawesome-free-6.7.2-web/css/all.min.css");
+document.head.appendChild(faLink);
+
+
 if (!document.getElementById("SignSync")) {
   const popup = document.createElement("div");
   popup.id = "SignSync";
@@ -5,29 +11,22 @@ if (!document.getElementById("SignSync")) {
 
   const closeButton = document.createElement("span");
   closeButton.className = "close-button";
-  closeButton.innerHTML = "&times;";
+  closeButton.innerHTML = '<i class="fa-solid fa-xmark"></i>';
   closeButton.onclick = () => popup.remove();
 
   const infoButton = document.createElement("span");
   infoButton.className = "info-button";
-  infoButton.innerHTML = "&times;";
+  infoButton.innerHTML = '<i class="fa-solid fa-circle-info"></i>';
 
   const configButton = document.createElement("span");
   configButton.className = "config-button";
-
-  const configImg = document.createElement("img");
-  configImg.src = chrome.runtime.getURL("icons/icon_config.png");
-  configImg.alt = "Config";
-  configImg.className = "config-icon";
-
-  configButton.appendChild(configImg);
+  configButton.innerHTML = '<i class="fa-solid fa-gears"></i>';
 
 
   const popup_header = document.createElement("div");
   popup_header.id = "popup-header";
   popup_header.className = "popup-header";
 
-  // Create left, center, right containers
   const leftContainer = document.createElement("div");
   leftContainer.className = "left-container";
   leftContainer.appendChild(configButton);
@@ -40,23 +39,24 @@ if (!document.getElementById("SignSync")) {
   rightContainer.className = "right-container";
   rightContainer.appendChild(infoButton);
 
-  // Optional: you can also put the closeButton in the rightContainer
   rightContainer.appendChild(closeButton);
 
-  // Append to popup header
   popup_header.appendChild(leftContainer);
   popup_header.appendChild(centerContainer);
   popup_header.appendChild(rightContainer);
 
-
+  const popup_footer = document.createElement("div");
+  popup_footer.id = "popup-footer";
+  popup_footer.className = "popup-footer";
 
   popup.appendChild(popup_header);
+  popup.appendChild(popup_footer);
 
   document.body.appendChild(popup);
 
-  // Drag logic
-  popup.onmousedown = function (event) {
-    if (event.target === closeButton) return;
+  // Drag logic apenas no header
+  popup_header.onmousedown = function (event) {
+    event.preventDefault(); // evitar seleção de texto
 
     let shiftX = event.clientX - popup.getBoundingClientRect().left;
     let shiftY = event.clientY - popup.getBoundingClientRect().top;
@@ -72,13 +72,14 @@ if (!document.getElementById("SignSync")) {
 
     document.addEventListener('mousemove', onMouseMove);
 
-    popup.onmouseup = function () {
+    document.onmouseup = function () {
       document.removeEventListener('mousemove', onMouseMove);
-      popup.onmouseup = null;
+      document.onmouseup = null;
     };
   };
 
-  popup.ondragstart = function () {
+  popup_header.ondragstart = function () {
     return false;
   };
+
 }
