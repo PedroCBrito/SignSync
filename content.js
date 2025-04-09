@@ -1,10 +1,9 @@
-const faLink = document.createElement("link");
-faLink.rel = "stylesheet";
-faLink.href = chrome.runtime.getURL("libraries/fontawesome-free-6.7.2-web/css/all.min.css");
-document.head.appendChild(faLink);
-
-
 if (!document.getElementById("SignSync")) {
+  const faLink = document.createElement("link");
+  faLink.rel = "stylesheet";
+  faLink.href = chrome.runtime.getURL("libraries/fontawesome-free-6.7.2-web/css/all.min.css");
+  document.head.appendChild(faLink);
+
   const popup = document.createElement("div");
   popup.id = "SignSync";
 

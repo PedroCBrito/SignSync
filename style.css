@@ -2,8 +2,8 @@
   position: absolute;
   top: 20px;
   right: 10px;
-  background: #ccc;
-  border: 1px solid #ccc;
+  background: #dedede;
+  border: 1px solid #000;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   z-index: 999999;
@@ -70,7 +70,7 @@
 #SignSync .close-button:hover,
 #SignSync .info-button:hover,
 #SignSync .config-button:hover {
-  color: #000;
+  color: #bcbcbc;
 }
 
 #SignSync .config-icon {
