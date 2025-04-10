@@ -20,12 +20,13 @@
     {
       "matches": ["<all_urls>"],
       "js": ["content.js"],
-      "css": ["style.css"]
+      "css": ["styles/style.css"]
     }
-  ],"web_accessible_resources": [
+  ],
+  "web_accessible_resources": [
     {
       "resources": [
-        "libraries/fontawesome-free-6.7.2-web/*"
+        "libraries/fontawesome-free-6.7.2-web/**"
       ],
       "matches": ["<all_urls>"]
     }
@@ -37,5 +38,3 @@
     "128": "icons/Icon_SignSync.png"
   }
 }
-
-  
