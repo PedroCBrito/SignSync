@@ -28,6 +28,19 @@
     cursor: move;        /* Mover apenas pelo cabeçalho */
     user-select: none;   /* Evita seleção de texto ao arrastar */
   }
+
+  #SignSync .popup-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    height: 300px;
+    background: #dedede;
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+    color: white;
+    font-weight: bold;
+  }
   
   #SignSync .popup-footer {
     position: absolute;
@@ -61,7 +74,8 @@
   /* Button Styles */
   #SignSync .close-button,
   #SignSync .info-button,
-  #SignSync .config-button {
+  #SignSync .config-button,
+  #SignSync .question-button {
     cursor: pointer;
     font-size: 18px;
     color: white;
@@ -69,8 +83,13 @@
   
   #SignSync .close-button:hover,
   #SignSync .info-button:hover,
-  #SignSync .config-button:hover {
+  #SignSync .config-button:hover,
+  #SignSync .question-button:hover {
     color: #bcbcbc;
+  }
+
+  #SignSync .question-button {
+    margin-left: 2px;
   }
   
   #SignSync .config-icon {

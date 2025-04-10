@@ -1,7 +1,22 @@
+import { infoPage, configPage, questionPage } from "./changePage";
+
 export function createIconButton(iconClass, className) {
     const button = document.createElement("span");
     button.className = className;
     button.innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
+
+    switch (className) {
+      case "config-button":
+        button.addEventListener("click", configPage);
+        break;
+        case "info-button":
+        button.addEventListener("click", infoPage);
+        break;
+        case "question-button":
+        button.addEventListener("click", questionPage);
+        break;
+    }
+    
     return button;
   }
   

@@ -1,4 +1,5 @@
 import { createIconButton, createCloseButton } from './utils.js';
+import { infoPage, questionPage, configPage } from './changePage.js';
 
 export function createHeader(popup) {
   const header = document.createElement("div");
@@ -8,6 +9,7 @@ export function createHeader(popup) {
   const left = document.createElement("div");
   left.className = "left-container";
   left.appendChild(createIconButton("fa-gears", "config-button"));
+  left.appendChild(createIconButton("fa-circle-question", "question-button"));
 
   const center = document.createElement("div");
   center.className = "center-container";
