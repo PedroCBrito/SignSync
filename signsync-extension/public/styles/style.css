@@ -24,21 +24,19 @@
     color: white;
     font-weight: bold;
     position: relative;
-  
-    cursor: move;        /* Mover apenas pelo cabeçalho */
     user-select: none;   /* Evita seleção de texto ao arrastar */
   }
 
   #SignSync .popup-body {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
     padding: 0 10px;
     height: 300px;
     background: #dedede;
     border-top-right-radius: 8px;
     border-top-left-radius: 8px;
-    color: white;
+    color: black;
     font-weight: bold;
   }
   
