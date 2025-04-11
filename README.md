@@ -1,8 +1,8 @@
 # SignSync
 Browser extension to translate video and audio content to LIBRAS
 
-
-Para rodar o projeto, utilize os seguintes comandos após o git clone
+É necessario ter instalado o nodejs.
+Para rodar o projeto, utilize os seguintes comandos após o git clone:
 
 cd signsync-extension
 npm install
