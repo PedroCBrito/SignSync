@@ -1,4 +1,5 @@
 import { createBody } from "./createBody";
+import { changeOpacity, changeSize } from './configFunctions.js';
 
 // Utilitário para acessar o shadow root corretamente
 function getShadowRoot() {
@@ -26,15 +27,31 @@ export function configPage() {
   if (!shadow) return;
 
   const popupBody = shadow.querySelector('.popup-body');
-
-  if (popupBody && popupBody.id !== "configBody") {
+  if (popupBody) {
     popupBody.remove();
-    shadow.querySelector('#SignSync').appendChild(createBody("configBody", getConfigContent()));
-  } else if (popupBody) {
-    popupBody.remove();
-    shadow.querySelector('#SignSync').appendChild(createBody('popup-body', ''));
   }
+
+  const newBody = createBody("configBody", getConfigContent());
+  shadow.querySelector('#SignSync').appendChild(newBody);
+
+  // Adiciona os event listeners manualmente
+  const opacityRange = newBody.querySelector('#opacityRange');
+  const sizeButtons = newBody.querySelectorAll('.size-button');
+
+  if (opacityRange) {
+    opacityRange.addEventListener('input', (e) => {
+      changeOpacity(e.target.value);
+    });
+  }
+
+  sizeButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const size = button.getAttribute('data-size');
+      changeSize(size);
+    });
+  });
 }
+
 
 export function questionPage() {
   const shadow = getShadowRoot();
@@ -64,6 +81,21 @@ function getConfigContent() {
   return `
     <h2>Configurações</h2>
     <h3>Aparência</h3>
+
+    <div class="appearance-section">
+      <label for="opacityRange">Opacidade</label>
+      <div class="opacity-control">
+        <input type="range" id="opacityRange" min="0" max="100" value="100">
+        <span id="opacityValue">100%</span>
+      </div>
+
+      <h4>Tamanho</h4>
+      <div class="size-options">
+        <button class="size-button" data-size="small">Pequeno</button>
+        <button class="size-button" data-size="medium">Médio</button>
+        <button class="size-button" data-size="large">Grande</button>
+      </div>
+    </div>
   `;
 }
 
