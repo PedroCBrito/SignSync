@@ -54,10 +54,10 @@ export function questionPage() {
 function getInfoContent() {
   const logoUrl = chrome.runtime.getURL("assets/icons/logo_SignSync.png");
   return `
-    <img src="${logoUrl}" alt="Logo SignSync" style="width: 100px; height: auto; margin: 0 auto 10px; display: block;">
-    <h2>SOBRE NÓS</h2>
+    <h2>Sobre Nós</h2>
     <p>Somos um grupo de estudantes apaixonados por tecnologia, unidos pelo propósito de tornar o conteúdo digital mais acessível para a comunidade surda.</p>
-  `;
+    <img src="${logoUrl}" alt="Logo SignSync" style="width: 100px; height: auto; margin: 0 auto 10px; display: block;">
+    `;
 }
 
 function getConfigContent() {
@@ -69,7 +69,7 @@ function getConfigContent() {
 
 function getQuestionContent() {
   return `
-    <h2>AJUDA</h2>
+    <h2>Ajuda</h2>
     <p>Somos um grupo de estudantes apaixonados por tecnologia, unidos pelo propósito de tornar o conteúdo digital mais acessível para a comunidade surda.</p>
   `;
 }

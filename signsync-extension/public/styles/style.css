@@ -12,6 +12,7 @@
   overflow: hidden;
 }
 
+/* Cabeçalho */
 #SignSync .popup-header {
   display: flex;
   justify-content: space-between;
@@ -24,9 +25,10 @@
   color: white;
   font-weight: bold;
   position: relative;
-  user-select: none;   /* Evita seleção de texto ao arrastar */
+  user-select: none; /* Evita seleção de texto ao arrastar */
 }
 
+/* Corpo do popup */
 #SignSync .popup-body {
   display: flex;
   flex-direction: column;
@@ -42,6 +44,7 @@
   overflow-y: auto;
 }
 
+/* Rodapé */
 #SignSync .popup-footer {
   position: absolute;
   bottom: 0;
@@ -59,7 +62,7 @@
   font-weight: bold;
 }
 
-/* Container Styles */
+/* Containers auxiliares */
 #SignSync .left-container,
 #SignSync .right-container {
   display: flex;
@@ -71,7 +74,7 @@
   text-align: center;
 }
 
-/* Button Styles */
+/* Estilo dos botões */
 #SignSync .close-button,
 #SignSync .info-button,
 #SignSync .config-button,
@@ -99,15 +102,17 @@
   display: block;
 }
 
-/* Especificando o estilo para h2 e p dentro de .popup-body */
+/* Estilo para conteúdo interno */
 #SignSync .popup-body h2 {
-  text-align: center; /* Centraliza o título */
-  font-family: 'Nunito Bold', sans-serif; /* Fonte para h2 */
-  margin-top: 20px; /* Adiciona um espaçamento superior */
+  text-align: center !important; /* Garante que o título fique centralizado */
+  font-family: 'Nunito Bold', sans-serif;
+  margin: 20px auto 10px;
+  width: 100%;
 }
 
 #SignSync .popup-body p {
-  text-align: left; /* Alinha o parágrafo à esquerda */
-  font-family: 'Nunito Bold', sans-serif; /* Fonte para p */
-  margin-top: 10px; /* Adiciona espaçamento superior para o parágrafo */
+  text-align: left !important; /* Garante que o texto fique à esquerda */
+  font-family: 'Nunito Bold', sans-serif;
+  margin-top: 10px;
+  width: 100%;
 }
