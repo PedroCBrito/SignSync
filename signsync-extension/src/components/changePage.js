@@ -1,60 +1,75 @@
 import { createBody } from "./createBody";
 
-export function infoPage() {
-    const popup = document.getElementById('SignSync');
-    const popupBody = document.getElementsByClassName('popup-body')[0];
+// Utilitário para acessar o shadow root corretamente
+function getShadowRoot() {
+  const wrapper = document.getElementById('SignSync-wrapper');
+  return wrapper?.shadowRoot || null;
+}
 
-    if (popupBody && popupBody.id !== "infoBody") {
-        popupBody.remove();
-        popup.appendChild(createBody("infoBody", getInfoContent()));
-    } else {
-        popupBody.remove();
-        popup.appendChild(createBody('popup-body', ''));
-    }
-           
+export function infoPage() {
+  const shadow = getShadowRoot();
+  if (!shadow) return;
+
+  const popupBody = shadow.querySelector('.popup-body');
+
+  if (popupBody && popupBody.id !== "infoBody") {
+    popupBody.remove();
+    shadow.querySelector('#SignSync').appendChild(createBody("infoBody", getInfoContent()));
+  } else if (popupBody) {
+    popupBody.remove();
+    shadow.querySelector('#SignSync').appendChild(createBody('popup-body', ''));
+  }
 }
 
 export function configPage() {
-    const popup = document.getElementById('SignSync');
-    const popupBody = document.getElementsByClassName('popup-body')[0];
+  const shadow = getShadowRoot();
+  if (!shadow) return;
 
-    if (popupBody && popupBody.id !== "configBody") {
-        popupBody.remove();
-        popup.appendChild(createBody("configBody", getConfigContent()));
-    } else {
-        popupBody.remove();
-        popup.appendChild(createBody('popup-body', ''));
-    }
+  const popupBody = shadow.querySelector('.popup-body');
+
+  if (popupBody && popupBody.id !== "configBody") {
+    popupBody.remove();
+    shadow.querySelector('#SignSync').appendChild(createBody("configBody", getConfigContent()));
+  } else if (popupBody) {
+    popupBody.remove();
+    shadow.querySelector('#SignSync').appendChild(createBody('popup-body', ''));
+  }
 }
 
 export function questionPage() {
-    const popup = document.getElementById('SignSync');
-    const popupBody = document.getElementsByClassName('popup-body')[0];
+  const shadow = getShadowRoot();
+  if (!shadow) return;
 
-    if (popupBody && popupBody.id !== "questionBody") {
-        popupBody.remove();
-        popup.appendChild(createBody("questionBody", getQuestionContent()));
-    } else {
-        popupBody.remove();
-        popup.appendChild(createBody('popup-body', ''));
-    }
+  const popupBody = shadow.querySelector('.popup-body');
+
+  if (popupBody && popupBody.id !== "questionBody") {
+    popupBody.remove();
+    shadow.querySelector('#SignSync').appendChild(createBody("questionBody", getQuestionContent()));
+  } else if (popupBody) {
+    popupBody.remove();
+    shadow.querySelector('#SignSync').appendChild(createBody('popup-body', ''));
+  }
 }
 
 function getInfoContent() {
-    return `
-        <h2>Sobre nós</h2>
-        <p>Somos um grupo de estudantes apaixonados por tecnologia, unidos pelo propósito de tornar o conteúdo digital mais acessível para a comunidade surda.</p>
-    `;
+  const logoUrl = chrome.runtime.getURL("assets/icons/logo_SignSync.png");
+  return `
+    <img src="${logoUrl}" alt="Logo SignSync" style="width: 100px; height: auto; margin: 0 auto 10px; display: block;">
+    <h2>SOBRE NÓS</h2>
+    <p>Somos um grupo de estudantes apaixonados por tecnologia, unidos pelo propósito de tornar o conteúdo digital mais acessível para a comunidade surda.</p>
+  `;
 }
 
 function getConfigContent() {
-    return `
-        <h2>Configurações</h2>
-    `;
+  return `
+    <h2>Configurações</h2>
+    <h3>Aparência</h3>
+  `;
 }
 
 function getQuestionContent() {
-    return `
-        <h2>Ajuda</h2>
-    `;
+  return `
+    <h2>AJUDA</h2>
+    <p>Somos um grupo de estudantes apaixonados por tecnologia, unidos pelo propósito de tornar o conteúdo digital mais acessível para a comunidade surda.</p>
+  `;
 }
