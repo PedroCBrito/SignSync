@@ -1,26 +1,27 @@
 import { createBody } from "./createBody";
 import { changeOpacity, changeSize, initializeOpacityControl } from './configFunctions.js';
+import { createReturnButton, getShadowRoot, createPageHeader } from "./utils";
 
-// Utilitário para acessar o shadow root corretamente
-function getShadowRoot() {
-  const wrapper = document.getElementById('SignSync-wrapper');
-  return wrapper?.shadowRoot || null;
-}
 
 export function infoPage() {
   const shadow = getShadowRoot();
   if (!shadow) return;
 
   const popupBody = shadow.querySelector('.popup-body');
-
   if (popupBody && popupBody.id !== "infoBody") {
     popupBody.remove();
-    shadow.querySelector('#SignSync').appendChild(createBody("infoBody", getInfoContent()));
+
+    const newBody = createBody("infoBody", getInfoContent());
+    shadow.querySelector('#SignSync').appendChild(newBody);
+
+    const header = createPageHeader("Sobre Nós");
+    newBody.insertBefore(header, newBody.firstChild); // Insere no topo
   } else if (popupBody) {
     popupBody.remove();
     shadow.querySelector('#SignSync').appendChild(createBody('popup-body', ''));
   }
 }
+
 
 export function configPage() {
   const shadow = getShadowRoot();
@@ -31,37 +32,33 @@ export function configPage() {
     popupBody.remove();
   }
 
-  if (popupBody && popupBody.id !== "configBody") {
+  const newBody = createBody("configBody", getConfigContent());
+  shadow.querySelector('#SignSync').appendChild(newBody);
 
-    const newBody = createBody("configBody", getConfigContent());
-    shadow.querySelector('#SignSync').appendChild(newBody);
+  const header = createPageHeader("Configurações");
+  newBody.insertBefore(header, newBody.firstChild);
 
-    // Adiciona os event listeners manualmente
-    const opacityRange = newBody.querySelector('#opacityRange');
-    const sizeButtons = newBody.querySelectorAll('.size-button');
+  // Event listeners
+  const opacityRange = newBody.querySelector('#opacityRange');
+  const sizeButtons = newBody.querySelectorAll('.size-button');
 
-    if (opacityRange) {
-      opacityRange.addEventListener('input', (e) => {
-        changeOpacity(e.target.value);
-      });
-    }
-
-    sizeButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        const size = button.getAttribute('data-size');
-        changeSize(size);
-        sizeButtons.forEach(btn => btn.classList.remove('selected'));
-        button.classList.add('selected');
-      });
+  if (opacityRange) {
+    opacityRange.addEventListener('input', (e) => {
+      changeOpacity(e.target.value);
     });
-    
-    initializeOpacityControl(shadow);
-  } else if (popupBody) {
-    popupBody.remove();
-    shadow.querySelector('#SignSync').appendChild(createBody('popup-body', ''));
   }
-}
 
+  sizeButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const size = button.getAttribute('data-size');
+      changeSize(size);
+      sizeButtons.forEach(btn => btn.classList.remove('selected'));
+      button.classList.add('selected');
+    });
+  });
+
+  initializeOpacityControl(shadow);
+}
 
 export function questionPage() {
   const shadow = getShadowRoot();
@@ -71,17 +68,23 @@ export function questionPage() {
 
   if (popupBody && popupBody.id !== "questionBody") {
     popupBody.remove();
-    shadow.querySelector('#SignSync').appendChild(createBody("questionBody", getQuestionContent()));
+
+    const newBody = createBody("questionBody", getQuestionContent());
+    shadow.querySelector('#SignSync').appendChild(newBody);
+
+    const header = createPageHeader("Ajuda");
+    newBody.insertBefore(header, newBody.firstChild);
+
   } else if (popupBody) {
     popupBody.remove();
     shadow.querySelector('#SignSync').appendChild(createBody('popup-body', ''));
   }
 }
 
+
 function getInfoContent() {
   const logoUrl = chrome.runtime.getURL("assets/icons/logo_SignSync.png");
   return `
-    <h2>Sobre Nós</h2>
     <p>Somos um grupo de estudantes apaixonados por tecnologia, unidos pelo propósito de tornar o conteúdo digital mais acessível para a comunidade surda.</p>
     <img src="${logoUrl}" alt="Logo SignSync" style="width: 100px; height: auto; margin: 0 auto 10px; display: block;">
     `;
@@ -89,7 +92,6 @@ function getInfoContent() {
 
 function getConfigContent() {
   return `
-    <h2>Configurações</h2>
     <h3>Aparência</h3>
 
     <div class="appearance-section">
@@ -111,7 +113,9 @@ function getConfigContent() {
 
 function getQuestionContent() {
   return `
-    <h2>Ajuda</h2>
-    <p>Somos um grupo de estudantes apaixonados por tecnologia, unidos pelo propósito de tornar o conteúdo digital mais acessível para a comunidade surda.</p>
+    <p>1º Passo: Clique no ícone do SignSync no canto superior direito da barra de endereços do seu navegador.</p>
+    <p>2º Passo: Selecione a opção "Configurações".</p>
+    <p>3º Passo: Clique no botão "Ajuda".</p>
+    <p>4º Passo: Abra uma página web com um vídeo</p>
   `;
 }
