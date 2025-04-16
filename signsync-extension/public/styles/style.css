@@ -29,7 +29,7 @@
 
 #SignSync * {
   box-sizing: border-box;
-  font-family: inherit !important;
+  font-family: 'Nunito Bold', sans-serif !important;
   color: inherit;
   margin: 0;
   padding: 0;
@@ -79,7 +79,7 @@
   background: #f5f2ec;
   color: black;
   font-weight: bold;
-  font-family: futura-pt, sans-serif;
+  font-family: 'Nunito Bold', sans-serif !important;
   overflow-y: auto;
   transition: height 0.3s ease, padding 0.3s ease;
   background-color: rgba(245, 242, 236, var(--popup-opacity));
@@ -199,7 +199,7 @@
   border-radius: 6px;
   cursor: pointer;
   font-family: 'Nunito Bold', sans-serif;
-  border: 2px solid transparent; /* já reserva espaço para a borda */
+  border: 2px solid transparent;
 }
 
 #SignSync .size-button.selected {

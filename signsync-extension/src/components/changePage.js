@@ -28,36 +28,40 @@ export function configPage() {
   if (!shadow) return;
 
   const popupBody = shadow.querySelector('.popup-body');
-  if (popupBody) {
+  if (popupBody && popupBody.id !== "configBody") {
     popupBody.remove();
-  }
+  
 
-  const newBody = createBody("configBody", getConfigContent());
-  shadow.querySelector('#SignSync').appendChild(newBody);
+    const newBody = createBody("configBody", getConfigContent());
+    shadow.querySelector('#SignSync').appendChild(newBody);
 
-  const header = createPageHeader("Configurações");
-  newBody.insertBefore(header, newBody.firstChild);
+    const header = createPageHeader("Configurações");
+    newBody.insertBefore(header, newBody.firstChild);
 
-  // Event listeners
-  const opacityRange = newBody.querySelector('#opacityRange');
-  const sizeButtons = newBody.querySelectorAll('.size-button');
+    // Event listeners
+    const opacityRange = newBody.querySelector('#opacityRange');
+    const sizeButtons = newBody.querySelectorAll('.size-button');
 
-  if (opacityRange) {
-    opacityRange.addEventListener('input', (e) => {
-      changeOpacity(e.target.value);
+    if (opacityRange) {
+      opacityRange.addEventListener('input', (e) => {
+        changeOpacity(e.target.value);
+      });
+    }
+
+    sizeButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const size = button.getAttribute('data-size');
+        changeSize(size);
+        sizeButtons.forEach(btn => btn.classList.remove('selected'));
+        button.classList.add('selected');
+      });
     });
+
+    initializeOpacityControl(shadow);
+  } else if (popupBody) {
+    popupBody.remove();
+    shadow.querySelector('#SignSync').appendChild(createBody('popup-body', ''));
   }
-
-  sizeButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const size = button.getAttribute('data-size');
-      changeSize(size);
-      sizeButtons.forEach(btn => btn.classList.remove('selected'));
-      button.classList.add('selected');
-    });
-  });
-
-  initializeOpacityControl(shadow);
 }
 
 export function questionPage() {
