@@ -30,7 +30,6 @@
 #SignSync * {
   box-sizing: border-box;
   font-family: inherit !important;
-  font-size: inherit !important;
   color: inherit;
   margin: 0;
   padding: 0;
@@ -83,6 +82,7 @@
   font-family: futura-pt, sans-serif;
   overflow-y: auto;
   transition: height 0.3s ease, padding 0.3s ease;
+  background-color: rgba(245, 242, 236, var(--popup-opacity));
 }
 
 /* Rodapé */
@@ -196,11 +196,15 @@
 
 #SignSync .size-button {
   background-color: #bcbcbc;
-  border: none;
   padding: 6px 12px;
   border-radius: 6px;
   cursor: pointer;
   font-family: 'Nunito Bold', sans-serif;
+  border: 2px solid transparent; /* já reserva espaço para a borda */
+}
+
+#SignSync .size-button.selected {
+  border: 2px solid #32ad67;
 }
 
 #SignSync .size-button:hover {
@@ -221,4 +225,20 @@
 #SignSync.large .popup-body {
   height: 400px;
   padding: 0 10px;
+}
+
+:host {
+  --popup-opacity: 1;
+}
+
+#SignSync.small .popup-body h2 {
+  font-size: 16px;
+}
+
+#SignSync.medium .popup-body h2 {
+  font-size: 20px;
+}
+
+#SignSync.large .popup-body h2 {
+  font-size: 24px;
 }

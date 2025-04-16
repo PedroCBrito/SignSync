@@ -38,7 +38,7 @@ export function createPopup() {
   popup.id = "SignSync";
   popup.className = "medium";
 
-  const header = createHeader(popup);
+  const header = createHeader();
   const body = createBody('popup-body', '');
   const footer = createFooter();
 

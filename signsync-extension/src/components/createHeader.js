@@ -1,7 +1,6 @@
 import { createIconButton, createCloseButton } from './utils.js';
-import { infoPage, questionPage, configPage } from './changePage.js';
 
-export function createHeader(popup) {
+export function createHeader() {
   const header = document.createElement("div");
   header.id = "popup-header";
   header.className = "popup-header";
@@ -18,7 +17,7 @@ export function createHeader(popup) {
   const right = document.createElement("div");
   right.className = "right-container";
   right.appendChild(createIconButton("fa-circle-info", "info-button"));
-  right.appendChild(createCloseButton(popup));
+  right.appendChild(createCloseButton());
 
   header.appendChild(left);
   header.appendChild(center);

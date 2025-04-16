@@ -1,20 +1,21 @@
 export function changeOpacity(value) {
-    const shadow = getShadowRoot();
-    if (!shadow) return;
-  
-    const popupBody = shadow.querySelector('.popup-body');
-    if (!popupBody) return;
-  
-    const alpha = value / 100;
-  
-    popupBody.style.backgroundColor = `rgba(245, 242, 236, ${alpha})`;
-  
-    const opacityDisplay = shadow.querySelector('#opacityValue');
-    if (opacityDisplay) {
-      opacityDisplay.textContent = `${value}%`;
-    }
+  const shadow = getShadowRoot();
+  if (!shadow) return;
+
+  const host = shadow.host;
+  if (!host) return;
+
+  const alpha = value / 100;
+
+  // Altera a variável CSS no elemento host
+  host.style.setProperty('--popup-opacity', alpha);
+
+  const opacityDisplay = shadow.querySelector('#opacityValue');
+  if (opacityDisplay) {
+    opacityDisplay.textContent = `${value}%`;
   }
-  
+}
+
   
 
 export function changeSize(size) {
@@ -31,4 +32,23 @@ export function changeSize(size) {
 function getShadowRoot() {
   const wrapper = document.getElementById('SignSync-wrapper');
   return wrapper?.shadowRoot || null;
+}
+
+export function initializeOpacityControl(shadow) {
+  const input = shadow.querySelector('#opacityRange');
+  const display = shadow.querySelector('#opacityValue');
+
+  if (!input || !display) return;
+
+  // Lê a variável CSS do :host
+  const host = shadow.host;
+  const styles = getComputedStyle(host);
+  const opacityVar = styles.getPropertyValue('--popup-opacity').trim();
+
+  // Converte para número entre 0–100
+  const currentValue = Math.round(parseFloat(opacityVar) * 100);
+
+  // Aplica nos elementos
+  input.value = currentValue;
+  display.textContent = `${currentValue}%`;
 }
