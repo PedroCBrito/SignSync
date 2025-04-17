@@ -268,3 +268,10 @@
   cursor: pointer;
   z-index: 1;
 }
+
+#SignSync .logo-header-image {
+  width: 100px;
+  height: auto;
+  margin: 8px auto 10px;
+  display: block;
+}

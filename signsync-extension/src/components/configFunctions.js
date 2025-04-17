@@ -43,3 +43,22 @@ export function initializeOpacityControl(shadow) {
   input.value = currentValue;
   display.textContent = `${currentValue}%`;
 }
+
+export function initializeSizeControl(sizeButtons) {
+  const shadow = getShadowRoot();
+  const popup = shadow.querySelector('#SignSync');
+  const currentSize = popup.classList.contains('small')
+    ? 'small'
+    : popup.classList.contains('large')
+    ? 'large'
+    : 'medium';
+
+  sizeButtons.forEach(button => {
+    if (button.getAttribute('data-size') === currentSize) {
+      button.classList.add('selected');
+    } else {
+      button.classList.remove('selected');
+    }
+  });
+
+}

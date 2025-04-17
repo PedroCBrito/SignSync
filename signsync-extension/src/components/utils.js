@@ -54,7 +54,7 @@ export function createIconButton(iconClass, className) {
     const headerContainer = document.createElement("div");
     headerContainer.className = "content-page-header";
   
-    const returnButton = createReturnButton(); // Usa sua função já existente
+    const returnButton = createReturnButton();
     const title = document.createElement("h2");
     title.textContent = titleText;
   

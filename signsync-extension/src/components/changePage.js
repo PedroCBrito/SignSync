@@ -1,7 +1,6 @@
 import { createBody } from "./createBody";
-import { changeOpacity, changeSize, initializeOpacityControl } from './configFunctions.js';
-import { createReturnButton, getShadowRoot, createPageHeader } from "./utils";
-
+import { changeOpacity, changeSize, initializeOpacityControl, initializeSizeControl } from './configFunctions.js';
+import { getShadowRoot, createPageHeader } from "./utils";
 
 export function infoPage() {
   const shadow = getShadowRoot();
@@ -57,6 +56,7 @@ export function configPage() {
       });
     });
 
+    initializeSizeControl(sizeButtons);
     initializeOpacityControl(shadow);
   } else if (popupBody) {
     popupBody.remove();
@@ -108,7 +108,7 @@ function getConfigContent() {
       <h4>Tamanho</h4>
       <div class="size-options">
         <button class="size-button" data-size="small">Pequeno</button>
-        <button class="size-button selected" data-size="medium">Médio</button>
+        <button class="size-button" data-size="medium">Médio</button>
         <button class="size-button" data-size="large">Grande</button>
       </div>
     </div>

@@ -12,7 +12,14 @@ export function createHeader() {
 
   const center = document.createElement("div");
   center.className = "center-container";
-  center.textContent = "SignSync";
+  const logoUrl = chrome.runtime.getURL("assets/icons/mini_logo.png");
+
+  // Corrigido: criando elemento de imagem
+  const logoImg = document.createElement("img");
+  logoImg.src = logoUrl;
+  logoImg.alt = "Logo SignSync";
+  logoImg.className = "logo-header-image";
+  center.appendChild(logoImg);
 
   const right = document.createElement("div");
   right.className = "right-container";
