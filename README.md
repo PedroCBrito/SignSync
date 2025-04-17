@@ -1,17 +1,20 @@
 # SignSync
+
 <p align="center">
   <img src="signsync-extension/public/assets/icons/Icon_SignSync.png" alt="Logo" width="150"/>
 </p>
 
+Browser extension that translates video and audio content into LIBRAS (Brazilian Sign Language).
 
+## Prerequisites
 
-Browser extension to translate video and audio content to LIBRAS
+Make sure you have **Node.js** installed on your machine.
 
-É necessario ter instalado o nodejs.
-Para rodar o projeto, utilize os seguintes comandos após o git clone:
+## How to run the project
 
+After cloning the repository, run the following commands:
+
+```bash
 cd signsync-extension
 npm install
 npm run build
-
-Entre no navegador e utilize a pasta /dist na opção 'Carregar sem compactação' 
