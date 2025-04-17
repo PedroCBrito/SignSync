@@ -1,17 +1,59 @@
 #SignSync {
+  all: initial;
+  font-family: 'Futura Bold', sans-serif !important;
+  font-size: 14px !important;
   position: absolute;
   top: 20px;
   right: 10px;
-  background: #dedede;
   border: 1px solid #000;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   z-index: 999999;
-  width: 300px;
-  height: 400px;
   overflow: hidden;
 }
 
+#SignSync.small {
+  width: 250px;
+  height: 350px;
+}
+
+#SignSync.medium {
+  width: 300px;
+  height: 400px;
+}
+
+#SignSync.large {
+  width: 400px;
+  height: 500px;
+}
+
+#SignSync * {
+  box-sizing: border-box;
+  font-family: 'Futura Bold', sans-serif !important;
+  color: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+#SignSync .fa,
+#SignSync .fa-solid,
+#SignSync .fa-regular,
+#SignSync .fa-brands,
+#SignSync .fas,
+#SignSync .far,
+#SignSync .fab {
+  font-family: 'Font Awesome 6 Free', 'FontAwesome', sans-serif !important;
+  font-weight: 900;
+  font-style: normal;
+  display: inline-block;
+  line-height: 1;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+}
+
+
+/* Cabeçalho */
 #SignSync .popup-header {
   display: flex;
   justify-content: space-between;
@@ -24,9 +66,10 @@
   color: white;
   font-weight: bold;
   position: relative;
-  user-select: none;   /* Evita seleção de texto ao arrastar */
+  user-select: none;
 }
 
+/* Corpo do popup - base */
 #SignSync .popup-body {
   display: flex;
   flex-direction: column;
@@ -34,14 +77,15 @@
   padding: 0 10px;
   height: 300px;
   background: #f5f2ec;
-  border-top-right-radius: 8px;
-  border-top-left-radius: 8px;
   color: black;
   font-weight: bold;
-  font-family: futura-pt, sans-serif;
+  font-family: 'Futura Bold', sans-serif !important;
   overflow-y: auto;
+  transition: height 0.3s ease, padding 0.3s ease;
+  background-color: rgba(245, 242, 236, var(--popup-opacity));
 }
 
+/* Rodapé */
 #SignSync .popup-footer {
   position: absolute;
   bottom: 0;
@@ -59,7 +103,7 @@
   font-weight: bold;
 }
 
-/* Container Styles */
+/* Containers auxiliares */
 #SignSync .left-container,
 #SignSync .right-container {
   display: flex;
@@ -71,7 +115,7 @@
   text-align: center;
 }
 
-/* Button Styles */
+/* Estilo dos botões */
 #SignSync .close-button,
 #SignSync .info-button,
 #SignSync .config-button,
@@ -99,15 +143,135 @@
   display: block;
 }
 
-/* Especificando o estilo para h2 e p dentro de .popup-body */
 #SignSync .popup-body h2 {
-  text-align: center; /* Centraliza o título */
-  font-family: 'Nunito Bold', sans-serif; /* Fonte para h2 */
-  margin-top: 20px; /* Adiciona um espaçamento superior */
+  text-align: center !important;
+  font-family: 'Futura Bold', sans-serif;
+  width: 100%;
 }
 
+
 #SignSync .popup-body p {
-  text-align: left; /* Alinha o parágrafo à esquerda */
-  font-family: 'Nunito Bold', sans-serif; /* Fonte para p */
-  margin-top: 10px; /* Adiciona espaçamento superior para o parágrafo */
+  text-align: left !important;
+  font-family: 'Futura Bold', sans-serif;
+  margin-top: 10px;
+  width: 100%;
+}
+
+#SignSync .appearance-section {
+  margin-top: 10px;
+  font-family: 'Futura Bold', sans-serif;
+  width: 100%;
+}
+
+#SignSync .appearance-section > *:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+#SignSync .appearance-section h3,
+#SignSync .appearance-section h4 {
+  margin-bottom: 10px;
+}
+
+
+#SignSync .opacity-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 5px;
+  width: 100%;
+}
+
+#SignSync input[type="range"] {
+  flex: 1;
+  accent-color: #32ad67;
+}
+
+#SignSync .size-options {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  justify-content: center;
+}
+
+#SignSync .size-button {
+  background-color: #bcbcbc;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Futura Bold', sans-serif;
+  border: 2px solid transparent;
+}
+
+#SignSync .size-button.selected {
+  border: 2px solid #32ad67;
+}
+
+#SignSync .size-button:hover {
+  background-color: #999;
+}
+
+/* Transições */
+#SignSync.small .popup-body {
+  height: 250px;
+  padding: 0 10px;
+}
+
+#SignSync.medium .popup-body {
+  height: 300px;
+  padding: 0 10px;
+}
+
+#SignSync.large .popup-body {
+  height: 400px;
+  padding: 0 10px;
+}
+
+:host {
+  --popup-opacity: 1;
+}
+
+#SignSync.small .popup-body h2 {
+  font-size: 16px;
+}
+
+#SignSync.medium .popup-body h2 {
+  font-size: 20px;
+}
+
+#SignSync.large .popup-body h2 {
+  font-size: 24px;
+}
+
+#SignSync .content-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 20px 0 20px;
+  position: relative;
+  width: 100%;
+  height: 40px;
+}
+
+#SignSync .content-page-header h2 {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  font-size: inherit;
+  margin: 0;
+  white-space: nowrap;
+}
+
+#SignSync .return-button {
+  position: relative;
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 1;
+}
+
+#SignSync .logo-header-image {
+  width: 100px;
+  height: auto;
+  margin: 8px auto 10px;
+  display: block;
 }

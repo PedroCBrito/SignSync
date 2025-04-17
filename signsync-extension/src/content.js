@@ -5,7 +5,7 @@ import { enableDrag } from './components/drag.js';
 if (!document.getElementById("SignSync-wrapper")) {
   injectFontAwesome();
   const popup = createPopup();
-  document.body.appendChild(popup); // `popup` é o wrapper
-  enableDrag(popup.shadowRoot.querySelector("#SignSync")); // se quiser aplicar drag no popup interno
+  document.body.appendChild(popup); 
+  enableDrag(popup.shadowRoot.querySelector("#SignSync"));
 }
 
