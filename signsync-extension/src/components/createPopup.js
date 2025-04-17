@@ -12,20 +12,20 @@ export function createPopup() {
   // Injetar CSS externo e fontes
   injectFontAwesome(shadow);
 
-  const fontURL = chrome.runtime.getURL('assets/fonts/Nunito/static/Nunito-Bold.ttf');
+  const fontURL = chrome.runtime.getURL('assets/fonts/Futura/FuturaPTBold.otf');
   const cssURL = chrome.runtime.getURL("styles/style.css");
 
   const style = document.createElement('style');
   style.textContent = `
   @font-face {
-    font-family: 'Nunito Bold';
+    font-family: 'Futura Bold';
     src: url('${fontURL}') format('truetype');
     font-weight: bold;
     font-style: normal;
   }
 
   #SignSync {
-    font-family: 'Nunito Bold', sans-serif !important;
+    font-family: 'Futura Bold', sans-serif !important;
   }
 `;
 

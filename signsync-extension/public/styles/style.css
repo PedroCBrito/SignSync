@@ -1,6 +1,6 @@
 #SignSync {
   all: initial;
-  font-family: 'Nunito Bold', sans-serif !important;
+  font-family: 'Futura Bold', sans-serif !important;
   font-size: 14px !important;
   position: absolute;
   top: 20px;
@@ -29,7 +29,7 @@
 
 #SignSync * {
   box-sizing: border-box;
-  font-family: 'Nunito Bold', sans-serif !important;
+  font-family: 'Futura Bold', sans-serif !important;
   color: inherit;
   margin: 0;
   padding: 0;
@@ -79,7 +79,7 @@
   background: #f5f2ec;
   color: black;
   font-weight: bold;
-  font-family: 'Nunito Bold', sans-serif !important;
+  font-family: 'Futura Bold', sans-serif !important;
   overflow-y: auto;
   transition: height 0.3s ease, padding 0.3s ease;
   background-color: rgba(245, 242, 236, var(--popup-opacity));
@@ -145,21 +145,21 @@
 
 #SignSync .popup-body h2 {
   text-align: center !important;
-  font-family: 'Nunito Bold', sans-serif;
+  font-family: 'Futura Bold', sans-serif;
   width: 100%;
 }
 
 
 #SignSync .popup-body p {
   text-align: left !important;
-  font-family: 'Nunito Bold', sans-serif;
+  font-family: 'Futura Bold', sans-serif;
   margin-top: 10px;
   width: 100%;
 }
 
 #SignSync .appearance-section {
   margin-top: 10px;
-  font-family: 'Nunito Bold', sans-serif;
+  font-family: 'Futura Bold', sans-serif;
   width: 100%;
 }
 
@@ -198,7 +198,7 @@
   padding: 6px 12px;
   border-radius: 6px;
   cursor: pointer;
-  font-family: 'Nunito Bold', sans-serif;
+  font-family: 'Futura Bold', sans-serif;
   border: 2px solid transparent;
 }
 
