@@ -1,5 +1,4 @@
 # SignSync
-Browser extension to translate video and audio content to LIBRAS
 
 ## Running this extension
 
@@ -10,3 +9,4 @@ Browser extension to translate video and audio content to LIBRAS
 5. Click the extension icon to open the control panel
 6. Click the start recording button to begin recording
 7. Click the stop recording button to end recording and download the file
+
