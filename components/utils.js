@@ -1,7 +1,7 @@
-import { infoPage, configPage, questionPage } from "./changePage";
-import { createBody } from "./createBody";
+// import { infoPage, configPage, questionPage } from "./changePage";
+// import { createBody } from "./createBody";
 
-export function createIconButton(iconClass, className) {
+function createIconButton(iconClass, className) {
     const button = document.createElement("span");
     button.className = className;
     button.innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
@@ -21,7 +21,7 @@ export function createIconButton(iconClass, className) {
     return button;
   }
   
-  export function createCloseButton(popup) {
+  function createCloseButton(popup) {
     const closeButton = document.createElement("span");
     closeButton.className = "close-button";
     closeButton.innerHTML = '<i class="fa-solid fa-xmark"></i>';
@@ -30,7 +30,7 @@ export function createIconButton(iconClass, className) {
   }
   
 
-  export function createReturnButton() {
+  function createReturnButton() {
     const returnButton = document.createElement("span");
     returnButton.className = "return-button";
     returnButton.innerHTML = '<i class="fa-solid fa-arrow-left"></i>';
@@ -45,12 +45,12 @@ export function createIconButton(iconClass, className) {
     return returnButton;
   }
 
-  export function getShadowRoot() {
+  function getShadowRoot() {
     const wrapper = document.getElementById('SignSync-wrapper');
     return wrapper?.shadowRoot || null;
   }
 
-  export function createPageHeader(titleText) {
+  function createPageHeader(titleText) {
     const headerContainer = document.createElement("div");
     headerContainer.className = "content-page-header";
   

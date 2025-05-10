@@ -1,8 +1,8 @@
-import { createBody } from "./createBody";
-import { changeOpacity, changeSize, initializeOpacityControl, initializeSizeControl } from './configFunctions.js';
-import { getShadowRoot, createPageHeader } from "./utils";
+// import { createBody } from "./createBody";
+// import { changeOpacity, changeSize, initializeOpacityControl, initializeSizeControl } from './configFunctions.js';
+// import { getShadowRoot, createPageHeader } from "./utils";
 
-export function infoPage() {
+function infoPage() {
   const shadow = getShadowRoot();
   if (!shadow) return;
 
@@ -22,7 +22,7 @@ export function infoPage() {
 }
 
 
-export function configPage() {
+function configPage() {
   const shadow = getShadowRoot();
   if (!shadow) return;
 
@@ -64,7 +64,7 @@ export function configPage() {
   }
 }
 
-export function questionPage() {
+function questionPage() {
   const shadow = getShadowRoot();
   if (!shadow) return;
 
