@@ -1,6 +1,6 @@
-import { getShadowRoot } from "./utils";
+// import { getShadowRoot } from "./utils";
 
-export function changeOpacity(value) {
+function changeOpacity(value) {
   const shadow = getShadowRoot();
   if (!shadow) return;
 
@@ -18,7 +18,7 @@ export function changeOpacity(value) {
   }
 }
 
-export function changeSize(size) {
+function changeSize(size) {
   const shadow = getShadowRoot();
   if (!shadow) return;
 
@@ -29,7 +29,7 @@ export function changeSize(size) {
   popup.classList.add(size);
 }
 
-export function initializeOpacityControl(shadow) {
+function initializeOpacityControl(shadow) {
   const input = shadow.querySelector('#opacityRange');
   const display = shadow.querySelector('#opacityValue');
 
@@ -44,7 +44,7 @@ export function initializeOpacityControl(shadow) {
   display.textContent = `${currentValue}%`;
 }
 
-export function initializeSizeControl(sizeButtons) {
+function initializeSizeControl(sizeButtons) {
   const shadow = getShadowRoot();
   const popup = shadow.querySelector('#SignSync');
   const currentSize = popup.classList.contains('small')

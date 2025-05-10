@@ -1,9 +1,9 @@
-import { createFooter } from './createFooter.js';
-import { createHeader } from './createHeader.js';
-import { createBody } from './createBody.js';
-import { injectFontAwesome } from './injectFontAwesome.js';
+// import { createFooter } from './createFooter.js';
+// import { createHeader } from './createHeader.js';
+// import { createBody } from './createBody.js';
+// import { injectFontAwesome } from './injectFontAwesome.js';
 
-export function createPopup() {
+function createPopup() {
   const wrapper = document.createElement("div");
   wrapper.id = "SignSync-wrapper";
 
@@ -12,8 +12,8 @@ export function createPopup() {
   // Injetar CSS externo e fontes
   injectFontAwesome(shadow);
 
-  const fontURL = chrome.runtime.getURL('assets/fonts/Futura/FuturaPTBold.otf');
-  const cssURL = chrome.runtime.getURL("styles/style.css");
+  const fontURL = chrome.runtime.getURL('public/assets/fonts/Futura/FuturaPTBold.otf');
+  const cssURL = chrome.runtime.getURL("public/styles/style.css");
 
   const style = document.createElement('style');
   style.textContent = `

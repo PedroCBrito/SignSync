@@ -1,4 +1,4 @@
-export function enableDrag(popup) {
+function enableDrag(popup) {
     const header = popup.querySelector("#popup-header");
   
     header.onmousedown = function (event) {

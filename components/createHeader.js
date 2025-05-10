@@ -1,6 +1,6 @@
-import { createIconButton, createCloseButton } from './utils.js';
+// import { createIconButton, createCloseButton } from './utils.js';
 
-export function createHeader() {
+function createHeader() {
   const header = document.createElement("div");
   header.id = "popup-header";
   header.className = "popup-header";
@@ -12,7 +12,7 @@ export function createHeader() {
 
   const center = document.createElement("div");
   center.className = "center-container";
-  const logoUrl = chrome.runtime.getURL("assets/icons/mini_logo.png");
+  const logoUrl = chrome.runtime.getURL("public/assets/icons/mini_logo.png");
 
   // Corrigido: criando elemento de imagem
   const logoImg = document.createElement("img");

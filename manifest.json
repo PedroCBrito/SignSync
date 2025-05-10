@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "minimum_chrome_version": "116",
+  "name": "SignSync",
+  "version": "1.0",
+  "description": "Exibe uma extensão para tradução de conteúdos para LIBRAS",
+  "permissions": ["activeTab", "scripting", "tabCapture", "offscreen"],
+  "host_permissions": ["*://*/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Mostrar Popup",
+    "default_icon": {
+      "16": "./public/assets/icons/Hand_SignSync.png",
+      "32": "./public/assets/icons/Hand_SignSync.png",
+      "48": "./public/assets/icons/Icon_SignSync.png",
+      "128": "./public/assets/icons/Icon_SignSync.png"
+    }
+  },
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "./public/styles/style.css", 
+        "./public/libraries/fontawesome-free-6.7.2-web/**",
+        "./public/assets/*",
+        "permissions.html",
+        "offscreen.html",
+        "./components/*"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "icons": {
+    "16": "./public/assets/icons/Hand_SignSync.png",
+    "32": "./public/assets/icons/Hand_SignSync.png",
+    "48": "./public/assets/icons/Icon_SignSync.png", 
+    "128": "./public/assets/icons/Icon_SignSync.png"
+  }
+}

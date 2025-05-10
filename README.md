@@ -1,20 +1,12 @@
 # SignSync
 
-<p align="center">
-  <img src="signsync-extension/public/assets/icons/Icon_SignSync.png" alt="Logo" width="150"/>
-</p>
+## Running this extension
 
-Browser extension that translates video and audio content into LIBRAS (Brazilian Sign Language).
+1. Clone this repository
+2. Load this directory in Chrome as an [unpacked extension](https://developer.chrome.com/docs/extensions/mv3/getstarted/development-basics/#load-unpacked)
+3. Pin the extension from the extension menu
+4. Navigate to the webpage you want to record
+5. Click the extension icon to open the control panel
+6. Click the start recording button to begin recording
+7. Click the stop recording button to end recording and download the file
 
-## Prerequisites
-
-Make sure you have **Node.js** installed on your machine.
-
-## How to run the project
-
-After cloning the repository, run the following commands:
-
-```bash
-cd signsync-extension
-npm install
-npm run build
