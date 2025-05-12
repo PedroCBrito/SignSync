@@ -63,4 +63,21 @@ function createIconButton(iconClass, className) {
   
     return headerContainer;
   }
+
+  function loadScriptsSequentially(scripts, callback) {
+    const loadNext = (index) => {
+      if (index >= scripts.length) {
+        if (callback) callback();
+        return;
+      }
+  
+      const script = document.createElement('script');
+      script.src = scripts[index];
+      script.onload = () => loadNext(index + 1);
+      script.onerror = () => console.error(`Failed to load script: ${scripts[index]}`);
+      document.head.appendChild(script);
+    };
+  
+    loadNext(0);
+  }  
   

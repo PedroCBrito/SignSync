@@ -1,3 +1,16 @@
+chrome.action.onClicked.addListener((tab) => {
+  if (!tab.url.startsWith("http")) {
+    console.warn("Não é possível injetar scripts em páginas chrome://");
+    return;
+  }
+
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    files: ['./components/injectFontAwesome.js', './components/changePage.js', './components/configFunctions.js', './components/utils.js', './components/drag.js', './components/createBody.js', './components/createHeader.js', './components/createFooter.js', './components/createPopup.js', 'content.js'],
+  });
+});
+
+
 chrome.runtime.onMessage.addListener(async (message) => {
   if (message.target === "service-worker") {
     switch (message.type) {

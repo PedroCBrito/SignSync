@@ -24,11 +24,6 @@ async function checkMicrophonePermission() {
 
 // Check recording state when popup opens
 async function checkRecordingState() {
-  const hasPermission = await checkMicrophonePermission();
-  if (!hasPermission) {
-    chrome.tabs.create({ url: "permission.html" });
-    return;
-  }
 
   const contexts = await chrome.runtime.getContexts({});
   const offscreenDocument = contexts.find(

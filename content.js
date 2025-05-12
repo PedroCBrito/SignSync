@@ -22,21 +22,7 @@ if (!document.getElementById("SignSync-wrapper")) {
     permissionStatus.style.display = "none";
   }
 
-  async function checkMicrophonePermission() {
-    try {
-      await navigator.mediaDevices.getUserMedia({ audio: true });
-      return true;
-    } catch (error) {
-      return false;
-    }
-  }
-
   async function checkRecordingState() {
-    const hasPermission = await checkMicrophonePermission();
-    if (!hasPermission) {
-      chrome.tabs.create({ url: "permission.html" });
-      return;
-    }
 
     const contexts = await chrome.runtime.getContexts({});
     const offscreenDocument = contexts.find(
