@@ -43,57 +43,21 @@ if (!document.getElementById("SignSync-wrapper")) {
 
   document.addEventListener("DOMContentLoaded", checkRecordingState);
 
-  startButton.addEventListener("click", async () => {
-    try {
-      const [tab] = await chrome.tabs.query({
-        active: true,
-        currentWindow: true,
-      });
+  startButton.addEventListener("click", () => {
+    chrome.runtime.sendMessage({
+      type: "start-recording-request",
+      target: "service-worker"
+    });
 
-      if (
-        !tab ||
-        tab.url.startsWith("chrome://") ||
-        tab.url.startsWith("chrome-extension://")
-      ) {
-        alert(
-          "Cannot record Chrome system pages. Please try on a regular webpage."
-        );
-        return;
-      }
-
-      const contexts = await chrome.runtime.getContexts({});
-      const offscreenDocument = contexts.find(
-        (c) => c.contextType === "OFFSCREEN_DOCUMENT"
-      );
-
-      if (!offscreenDocument) {
-        await chrome.offscreen.createDocument({
-          url: "offscreen.html",
-          reasons: ["USER_MEDIA"],
-          justification: "Recording from chrome.tabCapture API",
-        });
-      }
-
-      const streamId = await chrome.tabCapture.getMediaStreamId({
-        targetTabId: tab.id,
-      });
-
-      chrome.runtime.sendMessage({
-        type: "start-recording",
-        target: "offscreen",
-        data: streamId,
-      });
-
-      startButton.classList.remove("visible");
-      setTimeout(() => {
-        startButton.style.display = "none";
-        stopButton.style.display = "block";
-        setTimeout(() => stopButton.classList.add("visible"), 10);
-      }, 300);
-    } catch (error) {
-      alert("Failed to start recording: " + error.message);
-    }
+  
+    startButton.classList.remove("visible");
+    setTimeout(() => {
+      startButton.style.display = "none";
+      stopButton.style.display = "block";
+      setTimeout(() => stopButton.classList.add("visible"), 10);
+    }, 300);
   });
+ 
 
   stopButton.addEventListener("click", () => {
     setTimeout(() => {

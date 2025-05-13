@@ -66,6 +66,52 @@ chrome.runtime.onMessage.addListener(async (message) => {
 
       case "update-icon":
         break;
+
+      case "start-recording-request":
+          try {
+            const [tab] = await chrome.tabs.query({
+              active: true,
+              currentWindow: true,
+            });
+      
+            if (
+              !tab ||
+              tab.url.startsWith("chrome://") ||
+              tab.url.startsWith("chrome-extension://")
+            ) {
+              alert(
+                "Cannot record Chrome system pages. Please try on a regular webpage."
+              );
+              return;
+            }
+      
+            const contexts = await chrome.runtime.getContexts({});
+            const offscreenDocument = contexts.find(
+              (c) => c.contextType === "OFFSCREEN_DOCUMENT"
+            );
+      
+            if (!offscreenDocument) {
+              await chrome.offscreen.createDocument({
+                url: "offscreen.html",
+                reasons: ["USER_MEDIA"],
+                justification: "Recording from chrome.tabCapture API",
+              });
+            }
+      
+            const streamId = await chrome.tabCapture.getMediaStreamId({
+              targetTabId: tab.id,
+            });
+      
+            chrome.runtime.sendMessage({
+              type: "start-recording",
+              target: "offscreen",
+              data: streamId,
+            });
+
+          } catch (error) {
+            alert("Failed to start recording: " + error.message);
+          }
+          break;  
     }
   }
 });
