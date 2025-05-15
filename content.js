@@ -76,4 +76,15 @@ if (!document.getElementById("SignSync-wrapper")) {
   });
 }
 
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === "transcription-completed") {
+    const popup = document.getElementById("SignSync-wrapper");
+    if (!popup) return;
 
+    const shadow = popup.shadowRoot;
+    const transcriptionEl = shadow.getElementById("transcription-text");
+    if (transcriptionEl) {
+      transcriptionEl.textContent = message.transcription;
+    }
+  }
+});

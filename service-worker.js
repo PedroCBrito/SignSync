@@ -60,10 +60,6 @@ chrome.runtime.onMessage.addListener(async (message) => {
         }
         break;
 
-      case "recording-stopped":
-        chrome.action.setIcon({ path: "icons/not-recording.png" });
-        break;
-
       case "update-icon":
         break;
 
@@ -114,4 +110,15 @@ chrome.runtime.onMessage.addListener(async (message) => {
           break;  
     }
   }
+
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.type === "transcription-completed") {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs[0]?.id) {
+          chrome.tabs.sendMessage(tabs[0].id, message);
+        }
+      });
+    }
+  });
+
 });
