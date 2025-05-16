@@ -14,12 +14,6 @@ app.post("/transcribe", upload.single("file"), async (req, res) => {
   const file = req.file;
   if (!file) return res.status(400).json({ error: "No File Uploaded." });
 
-  console.log("Received file size:", file.size);
-
-  // (Opcional) Salva o arquivo para inspecionar se quiser
-  const debugFilename = `./debug-chunk-${Date.now()}.webm`;
-  fs.writeFileSync(debugFilename, file.buffer);
-
   try {
     const wavBuffer = await convertToWav(file.buffer);
     const audioBytes = wavBuffer.toString("base64");
@@ -38,8 +32,6 @@ app.post("/transcribe", upload.single("file"), async (req, res) => {
     const transcription = response.results
       .map((r) => r.alternatives[0].transcript)
       .join("\n");
-
-    console.log("Transcription:", transcription);
 
     res.json({ transcription });
 
@@ -86,14 +78,12 @@ function convertToWav(inputBuffer) {
       .audioFrequency(16000)
       .format("wav")
       .on("start", (cmd) => {
-        console.log("FFmpeg started:", cmd);
       })
       .on("error", (err) => {
         console.error("FFmpeg error:", err.message);
         reject(err);
       })
       .on("end", () => {
-        console.log("FFmpeg conversion finished.");
       })
       .pipe(outputStream, { end: true });
   });
