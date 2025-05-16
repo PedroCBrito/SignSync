@@ -75,16 +75,15 @@ if (!document.getElementById("SignSync-wrapper")) {
     }, 300);
   });
 }
-
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === "transcription-completed") {
+  if (message.type === "transcription-update") {
     const popup = document.getElementById("SignSync-wrapper");
     if (!popup) return;
 
     const shadow = popup.shadowRoot;
     const transcriptionEl = shadow.getElementById("transcription-text");
     if (transcriptionEl) {
-      transcriptionEl.textContent = message.transcription;
+      transcriptionEl.textContent = message.word;
     }
   }
 });

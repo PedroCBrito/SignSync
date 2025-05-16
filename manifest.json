@@ -27,7 +27,9 @@
       "public/assets/icons/*",
       "permissions.html",
       "offscreen.html",
-      "components/*"
+      "pcm-processor.js",
+      "components/*",
+      "unity/build/*"
     ],
     "matches": ["<all_urls>"]
   }
