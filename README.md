@@ -1,6 +1,9 @@
 # SignSync
 
-![SignSync](public/assets/icons/Icon_SignSync.png)
+<p align="center">
+  <img src="public/assets/icons/logo_SignSync.png" alt="SignSync" width="200" />
+</p>
+
 
 ## Running this extension
 
