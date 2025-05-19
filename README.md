@@ -1,5 +1,7 @@
 # SignSync
 
+![SignSync](public/assets/icons/Icon_SignSync.png)
+
 ## Running this extension
 
 1. Clone this repository
