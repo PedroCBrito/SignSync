@@ -112,7 +112,7 @@ chrome.runtime.onMessage.addListener(async (message) => {
   }
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.type === "transcription-completed") {
+    if (message.type === "transcription-update") {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         if (tabs[0]?.id) {
           chrome.tabs.sendMessage(tabs[0].id, message);
@@ -120,5 +120,6 @@ chrome.runtime.onMessage.addListener(async (message) => {
       });
     }
   });
+
 
 });

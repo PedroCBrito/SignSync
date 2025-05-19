@@ -1,5 +1,7 @@
 # SignSync
 
+![SignSync](public/assets/icons/Icon_SignSync.png)
+
 ## Running this extension
 
 1. Clone this repository
@@ -10,3 +12,15 @@
 6. Click the start recording button to begin recording
 7. Click the stop recording button to end recording and download the file
 
+
+
+## Running Backend
+1. Follow the following commands
+```
+cd SignSync-Backend
+cd speech-backend
+npm install
+docker-compose up --build
+```
+2. Open the browser and test the extension
+3. For error will be reflected in the console

@@ -12,10 +12,10 @@ COPY package*.json ./
 RUN npm install
 
 # Copiar a chave de autenticação do Google Cloud para dentro do container
-COPY ./signsync-459720-7200b7db9fbe.json /app/signsync-459720-7200b7db9fbe.json
+COPY ./signsync-459720-43c3e4cb8e37.json /app/signsync-459720-43c3e4cb8e37.json
 
 # Definir variável de ambiente para o caminho da chave de autenticação
-ENV GOOGLE_APPLICATION_CREDENTIALS=/app/signsync-459720-7200b7db9fbe.json
+ENV GOOGLE_APPLICATION_CREDENTIALS=/app/signsync-459720-43c3e4cb8e37.json
 
 # Copiar o restante dos arquivos do projeto
 COPY . .

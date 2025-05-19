@@ -1,32 +1,25 @@
-let recorder;
-let data = [];
-let activeStreams = [];
+let socket;
+let audioContext;
+let processor;
+let tabStream; // <- stream da aba para parar depois
 
 chrome.runtime.onMessage.addListener(async (message) => {
   if (message.target === "offscreen") {
-    switch (message.type) {
-      case "start-recording":
-        startRecording(message.data);
-        break;
-      case "stop-recording":
-        stopRecording();
-        break;
-      default:
-        throw new Error("Unrecognized message:", message.type);
+    if (message.type === "start-recording") {
+      await startStreaming(message.data);
+    } else if (message.type === "stop-recording") {
+      stopStreaming();
     }
   }
 });
 
-async function startRecording(streamId) {
-  if (recorder?.state === "recording") {
-    throw new Error("Called startRecording while recording is in progress.");
-  }
+async function startStreaming(streamId) {
+  socket = new WebSocket("ws://localhost:3000/audio");
+  socket.binaryType = "arraybuffer";
 
-  await stopAllStreams();
-
-  try {
-    // Get tab audio stream
-    const tabStream = await navigator.mediaDevices.getUserMedia({
+  socket.onopen = async () => {
+    // Captura o áudio da aba usando o streamId
+    tabStream = await navigator.mediaDevices.getUserMedia({
       audio: {
         mandatory: {
           chromeMediaSource: "tab",
@@ -36,99 +29,77 @@ async function startRecording(streamId) {
       video: false,
     });
 
-    activeStreams.push(tabStream);
+    // Cria o contexto de áudio com sampleRate de 16000Hz
+    audioContext = new AudioContext({ sampleRate: 16000 });
 
-    // Create audio context
-    const audioContext = new AudioContext();
+    // Adiciona o processador personalizado (AudioWorklet)
+    await audioContext.audioWorklet.addModule("pcm-processor.js");
+    const source = audioContext.createMediaStreamSource(tabStream);
+    processor = new AudioWorkletNode(audioContext, "pcm-processor");
 
-    // Create sources and destination
-    const tabSource = audioContext.createMediaStreamSource(tabStream);
-    const destination = audioContext.createMediaStreamDestination();
-
-    // Create gain nodes
-    const tabGain = audioContext.createGain();
-
-    // Set gain values
-    tabGain.gain.value = 1.0; // Normal tab volume
-
-    // Connect tab audio to both speakers and recorder
-    tabSource.connect(tabGain);
-    tabGain.connect(audioContext.destination);
-    tabGain.connect(destination);
-
-    // Start recording
-    recorder = new MediaRecorder(destination.stream, {
-      mimeType: "audio/webm",
-    });
-    recorder.ondataavailable = (event) => data.push(event.data);
-    recorder.onstop = () => {
-      const blob = new Blob(data, { type: "audio/webm" });
-
-      // Cria FormData e adiciona o arquivo com a chave "file"
-      const formData = new FormData();
-      formData.append("file", blob, "recording.webm");
-
-      // Envia o arquivo para o backend
-      fetch("http://localhost:3000/transcribe", {
-        method: "POST",
-        body: formData,
-      })
-        .then((response) => response.json())
-        .then((result) => {
-          chrome.runtime.sendMessage({
-            type: "transcription-completed",
-            transcription: result.transcription,
-          });
-        })
-        .catch((error) => {
-          console.error("Erro ao enviar o áudio:", error);
-        });
-
-      // Limpeza
-      recorder = undefined;
-      data = [];
+    // Recebe buffers de áudio processados e envia via WebSocket
+    processor.port.onmessage = (event) => {
+      const float32Samples = event.data;
+      const int16Samples = float32ToInt16(float32Samples);
+      if (socket.readyState === WebSocket.OPEN) {
+        socket.send(int16Samples.buffer);
+      }
     };
 
-    recorder.start();
-    window.location.hash = "recording";
+    source.connect(processor);
+    processor.connect(audioContext.destination);
 
+    const outputNode = audioContext.createGain();
+    source.connect(outputNode);
+    outputNode.connect(audioContext.destination);
+  };
+
+ socket.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+
+  if (data.transcript || data.word) {
     chrome.runtime.sendMessage({
-      type: "update-icon",
-      target: "service-worker",
-      recording: true,
+      type: "transcription-update",
+      transcription: data.transcript,
+      word: data.word,
+      isFinal: data.isFinal,
     });
-  } catch (error) {
-    console.error("Error starting recording:", error);
-    chrome.runtime.sendMessage({
-      type: "recording-error",
-      target: "popup",
-      error: error.message,
-    });
+  }
+};
+
+}
+
+function stopStreaming() {
+  // Desconecta o processador
+  if (processor) {
+    processor.disconnect();
+    processor = null;
+  }
+
+  // Fecha o contexto de áudio
+  if (audioContext) {
+    audioContext.close();
+    audioContext = null;
+  }
+
+  // Para as tracks do stream da aba
+  if (tabStream) {
+    tabStream.getTracks().forEach((track) => track.stop());
+    tabStream = null;
+  }
+
+  // Fecha o WebSocket
+  if (socket && socket.readyState === WebSocket.OPEN) {
+    socket.close();
+    socket = null;
   }
 }
 
-async function stopRecording() {
-  if (recorder && recorder.state === "recording") {
-    recorder.stop();
+// Converte Float32 para Int16 (Linear PCM 16-bit)
+function float32ToInt16(float32Array) {
+  const int16Array = new Int16Array(float32Array.length);
+  for (let i = 0; i < float32Array.length; i++) {
+    int16Array[i] = Math.max(-1, Math.min(1, float32Array[i])) * 0x7fff;
   }
-
-  await stopAllStreams();
-  window.location.hash = "";
-
-  chrome.runtime.sendMessage({
-    type: "update-icon",
-    target: "service-worker",
-    recording: false,
-  });
-}
-
-async function stopAllStreams() {
-  activeStreams.forEach((stream) => {
-    stream.getTracks().forEach((track) => {
-      track.stop();
-    });
-  });
-
-  activeStreams = [];
-  await new Promise((resolve) => setTimeout(resolve, 100));
+  return int16Array;
 }
