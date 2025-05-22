@@ -1,5 +1,3 @@
-// import { getShadowRoot } from "./utils";
-
 function changeOpacity(value) {
   const shadow = getShadowRoot();
   if (!shadow) return;

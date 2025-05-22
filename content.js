@@ -1,7 +1,3 @@
-// import { injectFontAwesome } from './components/injectFontAwesome.js';
-// import { createPopup } from './components/createPopup.js';
-// import { enableDrag } from './components/drag.js';
-
 if (!document.getElementById("SignSync-wrapper")) {
   injectFontAwesome();
   const popup = createPopup();
@@ -53,7 +49,7 @@ if (!document.getElementById("SignSync-wrapper")) {
     startButton.classList.remove("visible");
     setTimeout(() => {
       startButton.style.display = "none";
-      stopButton.style.display = "block";
+      stopButton.style.display = "inline-block";
       setTimeout(() => stopButton.classList.add("visible"), 10);
     }, 300);
   });
@@ -68,22 +64,50 @@ if (!document.getElementById("SignSync-wrapper")) {
     }, 500);
 
     stopButton.classList.remove("visible");
+
+        
+    const popup = document.getElementById("SignSync-wrapper");
+    if (!popup) return;
+
+    const shadow = popup.shadowRoot;
+    const transcriptionContent = shadow.getElementById("transcriptionContent");
+    
     setTimeout(() => {
       stopButton.style.display = "none";
       startButton.style.display = "block";
       setTimeout(() => startButton.classList.add("visible"), 10);
+      setTimeout(() => transcriptionContent.textContent = "", 100);
     }, 300);
+    
   });
 }
+var lastWordSent = null;
+var resetTimer;
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "transcription-update") {
     const popup = document.getElementById("SignSync-wrapper");
     if (!popup) return;
 
     const shadow = popup.shadowRoot;
-    const transcriptionEl = shadow.getElementById("transcription-text");
-    if (transcriptionEl) {
-      transcriptionEl.textContent = message.word;
+    const transcriptionContent = shadow.getElementById("transcriptionContent");
+    if (transcriptionContent) {
+      transcriptionContent.textContent = message.word;
+    }
+    
+    const iframe = shadow.querySelector("iframe.unity-iframe");
+
+    if (iframe && message.word !== lastWordSent) {
+      iframe.contentWindow.postMessage(
+        { type: "unity-word", word: message.word },
+        "http://localhost:8080"
+      );
+      lastWordSent = message.word;
+
+      clearTimeout(resetTimer);
+      resetTimer = setTimeout(() => {
+        lastWordSent = null;
+      }, 2000);
     }
   }
 });

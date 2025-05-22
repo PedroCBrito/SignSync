@@ -1,8 +1,3 @@
-// import { createFooter } from './createFooter.js';
-// import { createHeader } from './createHeader.js';
-// import { createBody } from './createBody.js';
-// import { injectFontAwesome } from './injectFontAwesome.js';
-
 function createPopup() {
   const wrapper = document.createElement("div");
   wrapper.id = "SignSync-wrapper";

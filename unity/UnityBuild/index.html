@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Unity WebGL Build</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      overflow: hidden;
+      height: 100%;
+    }
+    #unity-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    canvas {
+      width: 960px;
+      height: 600px;
+    }
+  </style>
+</head>
+<body>
+  <div id="unity-container">
+    <canvas id="unity-canvas"></canvas>
+  </div>
+
+  <script src="UnityBuilds.loader.js"></script>
+  <script>
+    createUnityInstance(document.getElementById("unity-canvas"), {
+      dataUrl: "UnityBuilds.data",
+      frameworkUrl: "UnityBuilds.framework.js",
+      codeUrl: "UnityBuilds.wasm",
+      companyName: "SignSync",
+      productName: "SignSync Translator",
+      productVersion: "1.0"
+    }).then((unityInstance) => {
+      console.log("✅ Unity loaded");
+      window.unityInstance = unityInstance;
+    }).catch((err) => {
+      console.error("❌ Unity failed to load:", err);
+    });
+  </script>
+
+  <script>
+    window.addEventListener("message", (event) => {
+      //if (event.origin !== "http://localhost:8080") return;
+
+      const data = event.data;
+      if (data.type === "unity-word") {
+
+        // Envie o dado para o Unity
+        if (typeof unityInstance !== "undefined") {
+          unityInstance.SendMessage("top", "ReceberMensagem", data.word);
+        } else {
+          console.error("Unity não está carregado.");
+        }
+      }
+    });
+  </script>
+
+
+</body>
+</html>

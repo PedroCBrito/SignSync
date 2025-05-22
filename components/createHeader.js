@@ -1,5 +1,3 @@
-// import { createIconButton, createCloseButton } from './utils.js';
-
 function createHeader() {
   const header = document.createElement("div");
   header.id = "popup-header";
