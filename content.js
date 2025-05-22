@@ -49,7 +49,7 @@ if (!document.getElementById("SignSync-wrapper")) {
     startButton.classList.remove("visible");
     setTimeout(() => {
       startButton.style.display = "none";
-      stopButton.style.display = "block";
+      stopButton.style.display = "inline-block";
       setTimeout(() => stopButton.classList.add("visible"), 10);
     }, 300);
   });
@@ -64,15 +64,25 @@ if (!document.getElementById("SignSync-wrapper")) {
     }, 500);
 
     stopButton.classList.remove("visible");
+
+        
+    const popup = document.getElementById("SignSync-wrapper");
+    if (!popup) return;
+
+    const shadow = popup.shadowRoot;
+    const transcriptionContent = shadow.getElementById("transcriptionContent");
+    
     setTimeout(() => {
       stopButton.style.display = "none";
       startButton.style.display = "block";
       setTimeout(() => startButton.classList.add("visible"), 10);
+      setTimeout(() => transcriptionContent.textContent = "", 100);
     }, 300);
+    
   });
 }
-let lastWordSent = null;
-let resetTimer;
+var lastWordSent = null;
+var resetTimer;
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "transcription-update") {
@@ -80,11 +90,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (!popup) return;
 
     const shadow = popup.shadowRoot;
-    const transcriptionEl = shadow.getElementById("transcription-text");
-    if (transcriptionEl) {
-      transcriptionEl.textContent = message.word;
+    const transcriptionContent = shadow.getElementById("transcriptionContent");
+    if (transcriptionContent) {
+      transcriptionContent.textContent = message.word;
     }
-
+    
     const iframe = shadow.querySelector("iframe.unity-iframe");
 
     if (iframe && message.word !== lastWordSent) {
