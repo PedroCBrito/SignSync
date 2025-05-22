@@ -1,7 +1,3 @@
-// import { injectFontAwesome } from './components/injectFontAwesome.js';
-// import { createPopup } from './components/createPopup.js';
-// import { enableDrag } from './components/drag.js';
-
 if (!document.getElementById("SignSync-wrapper")) {
   injectFontAwesome();
   const popup = createPopup();
@@ -75,6 +71,9 @@ if (!document.getElementById("SignSync-wrapper")) {
     }, 300);
   });
 }
+let lastWordSent = null;
+let resetTimer;
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "transcription-update") {
     const popup = document.getElementById("SignSync-wrapper");
@@ -84,6 +83,21 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const transcriptionEl = shadow.getElementById("transcription-text");
     if (transcriptionEl) {
       transcriptionEl.textContent = message.word;
+    }
+
+    const iframe = shadow.querySelector("iframe.unity-iframe");
+
+    if (iframe && message.word !== lastWordSent) {
+      iframe.contentWindow.postMessage(
+        { type: "unity-word", word: message.word },
+        "http://localhost:8080"
+      );
+      lastWordSent = message.word;
+
+      clearTimeout(resetTimer);
+      resetTimer = setTimeout(() => {
+        lastWordSent = null;
+      }, 2000);
     }
   }
 });

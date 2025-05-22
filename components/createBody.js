@@ -3,9 +3,12 @@ function createBody(idName, htmlContent){
     body.id = idName;
     body.className = "popup-body";
     body.innerHTML = htmlContent? htmlContent : `
+
+    <iframe src="http://localhost:8080" class="unity-iframe"></iframe>
+
     <div class="button-container">
-      <button id="startRecord">Start Recording</button>
-      <button id="stopRecord">Stop Recording</button>
+      <button id="startRecord">Começar</button>
+      <button id="stopRecord">Parar</button>
     </div>`
 
     return body;

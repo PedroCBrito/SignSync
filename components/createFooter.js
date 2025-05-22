@@ -6,7 +6,7 @@ function createFooter(){
     const transcriptionElement = document.createElement("p");
     transcriptionElement.id = "transcription-text";
     transcriptionElement.className = "transcription-text";
-    transcriptionElement.textContent = "Default Transcription";
+    transcriptionElement.textContent = "";
 
     footer.appendChild(transcriptionElement);
 

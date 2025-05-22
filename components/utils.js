@@ -1,6 +1,3 @@
-// import { infoPage, configPage, questionPage } from "./changePage";
-// import { createBody } from "./createBody";
-
 function createIconButton(iconClass, className) {
     const button = document.createElement("span");
     button.className = className;

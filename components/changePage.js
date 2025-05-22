@@ -1,7 +1,3 @@
-// import { createBody } from "./createBody";
-// import { changeOpacity, changeSize, initializeOpacityControl, initializeSizeControl } from './configFunctions.js';
-// import { getShadowRoot, createPageHeader } from "./utils";
-
 function infoPage() {
   const shadow = getShadowRoot();
   if (!shadow) return;
@@ -14,7 +10,7 @@ function infoPage() {
     shadow.querySelector('#SignSync').appendChild(newBody);
 
     const header = createPageHeader("Sobre Nós");
-    newBody.insertBefore(header, newBody.firstChild); // Insere no topo
+    newBody.insertBefore(header, newBody.firstChild);
   } else if (popupBody) {
     popupBody.remove();
     shadow.querySelector('#SignSync').appendChild(createBody('popup-body', ''));
@@ -85,25 +81,35 @@ function questionPage() {
   }
 }
 
-
 function getInfoContent() {
   const logoUrl = chrome.runtime.getURL("assets/icons/logo_SignSync.png");
   return `
-    <p>Somos um grupo de estudantes apaixonados por tecnologia, unidos pelo propósito de tornar o conteúdo digital mais acessível para a comunidade surda.</p>
-    <img src="${logoUrl}" alt="Logo SignSync" style="width: 100px; height: auto; margin: 0 auto 10px; display: block;">
-    `;
+    <div style="margin-top: -30px;">
+      <p style="text-align: justify !important; text-indent: 2em;">
+        Somos um grupo de estudantes apaixonados por tecnologia, unidos pelo propósito de tornar o conteúdo digital mais acessível para a comunidade surda. Acreditamos que a inclusão começa com a comunicação, e por isso desenvolvemos esta extensão com foco na acessibilidade.
+      </p>
+      <p style="text-align: justify !important; text-indent: 2em;">
+        Nosso objetivo é proporcionar uma experiência mais justa e completa para pessoas surdas, traduzindo automaticamente o áudio de vídeos reproduzidos no navegador para a Língua Brasileira de Sinais (Libras).
+      </p>
+    </div>
+  `;
 }
+
+
+
 
 function getConfigContent() {
   return `
     <h3>Aparência</h3>
 
     <div class="appearance-section">
+      <!-- Controle de opacidade desabilitado
       <label for="opacityRange">Opacidade</label>
       <div class="opacity-control">
         <input type="range" id="opacityRange" min="0" max="100" value="--popup-opacity">
         <span id="opacityValue">100%</span>
       </div>
+      -->
 
       <h4>Tamanho</h4>
       <div class="size-options">
@@ -118,8 +124,9 @@ function getConfigContent() {
 function getQuestionContent() {
   return `
     <p>1º Passo: Clique no ícone do SignSync no canto superior direito da barra de endereços do seu navegador.</p>
-    <p>2º Passo: Selecione a opção "Configurações".</p>
-    <p>3º Passo: Clique no botão "Ajuda".</p>
+    <p>2º Passo: Espere o carregamento do personagem 3D</p>
+    <p>3º Passo: Clique no botão "Começar".</p>
     <p>4º Passo: Abra uma página web com um vídeo</p>
+    <p>5º Passo: A ferramenta já está pronta para uso</p>
   `;
 }

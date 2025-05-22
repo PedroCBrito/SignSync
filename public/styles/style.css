@@ -297,3 +297,9 @@
   white-space: pre-wrap;
   word-break: break-word;
 }
+#SignSync .unity-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  flex-grow: 1;
+}

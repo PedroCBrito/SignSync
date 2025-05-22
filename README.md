@@ -24,3 +24,14 @@ docker-compose up --build
 ```
 2. Open the browser and test the extension
 3. For error will be reflected in the console
+
+
+## Running Unity
+1. Follow the following commands
+```
+cd unity
+docker build -t unity-webgl .
+docker run --name unity-container -p 8080:80 unity-webgl
+```
+2. Open the browser and test the extension
+3. For error will be reflected in the console
