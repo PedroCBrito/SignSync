@@ -1,7 +1,7 @@
 let socket;
 let audioContext;
 let processor;
-let tabStream; // <- stream da aba para parar depois
+let tabStream;
 
 chrome.runtime.onMessage.addListener(async (message) => {
   if (message.target === "offscreen") {
@@ -18,7 +18,7 @@ async function startStreaming(streamId) {
   socket.binaryType = "arraybuffer";
 
   socket.onopen = async () => {
-    // Captura o áudio da aba usando o streamId
+    // Captures the tab audio using the streamId
     tabStream = await navigator.mediaDevices.getUserMedia({
       audio: {
         mandatory: {
@@ -29,15 +29,15 @@ async function startStreaming(streamId) {
       video: false,
     });
 
-    // Cria o contexto de áudio com sampleRate de 16000Hz
+    // Creates the audio context with a 16000Hz sample rate
     audioContext = new AudioContext({ sampleRate: 16000 });
 
-    // Adiciona o processador personalizado (AudioWorklet)
+    // Adds the custom processor (AudioWorklet)
     await audioContext.audioWorklet.addModule("pcm-processor.js");
     const source = audioContext.createMediaStreamSource(tabStream);
     processor = new AudioWorkletNode(audioContext, "pcm-processor");
 
-    // Recebe buffers de áudio processados e envia via WebSocket
+    // Receives processed audio buffers and sends them via WebSocket
     processor.port.onmessage = (event) => {
       const float32Samples = event.data;
       const int16Samples = float32ToInt16(float32Samples);
@@ -70,32 +70,27 @@ async function startStreaming(streamId) {
 }
 
 function stopStreaming() {
-  // Desconecta o processador
   if (processor) {
     processor.disconnect();
     processor = null;
   }
 
-  // Fecha o contexto de áudio
   if (audioContext) {
     audioContext.close();
     audioContext = null;
   }
 
-  // Para as tracks do stream da aba
   if (tabStream) {
     tabStream.getTracks().forEach((track) => track.stop());
     tabStream = null;
   }
 
-  // Fecha o WebSocket
   if (socket && socket.readyState === WebSocket.OPEN) {
     socket.close();
     socket = null;
   }
 }
 
-// Converte Float32 para Int16 (Linear PCM 16-bit)
 function float32ToInt16(float32Array) {
   const int16Array = new Int16Array(float32Array.length);
   for (let i = 0; i < float32Array.length; i++) {

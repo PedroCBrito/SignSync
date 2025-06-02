@@ -44,7 +44,6 @@ if (!document.getElementById("SignSync-wrapper")) {
       type: "start-recording-request",
       target: "service-worker"
     });
-
   
     startButton.classList.remove("visible");
     setTimeout(() => {
@@ -64,7 +63,6 @@ if (!document.getElementById("SignSync-wrapper")) {
     }, 500);
 
     stopButton.classList.remove("visible");
-
         
     const popup = document.getElementById("SignSync-wrapper");
     if (!popup) return;
@@ -81,8 +79,9 @@ if (!document.getElementById("SignSync-wrapper")) {
     
   });
 }
-var lastWordSent = null;
-var resetTimer;
+var sentWords = new Set();
+var wordTimestamps = new Map();
+var WORD_EXPIRATION_MS = 5000;
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "transcription-update") {
@@ -94,20 +93,27 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (transcriptionContent) {
       transcriptionContent.textContent = message.word;
     }
-    
+
     const iframe = shadow.querySelector("iframe.unity-iframe");
 
-    if (iframe && message.word !== lastWordSent) {
-      iframe.contentWindow.postMessage(
-        { type: "unity-word", word: message.word },
-        "http://localhost:8080"
-      );
-      lastWordSent = message.word;
+    if (iframe) {
+      const now = Date.now();
 
-      clearTimeout(resetTimer);
-      resetTimer = setTimeout(() => {
-        lastWordSent = null;
-      }, 2000);
+    // Expire old words
+    for (const [word, timestamp] of wordTimestamps.entries()) {
+      if (now - timestamp > WORD_EXPIRATION_MS) {
+        sentWords.delete(word);
+        wordTimestamps.delete(word);
+      }
+    }
+
+  if (!sentWords.has(message.word)) {
+    iframe.contentWindow.postMessage(
+      { type: "unity-word", word: message.word }, "http://localhost:8080");
+      sentWords.add(message.word);
+      wordTimestamps.set(message.word, now);
     }
   }
+  }
 });
+

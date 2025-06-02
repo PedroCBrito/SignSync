@@ -4,7 +4,6 @@ function createPopup() {
 
   const shadow = wrapper.attachShadow({ mode: "open" });
 
-  // Injetar CSS externo e fontes
   injectFontAwesome(shadow);
 
   const fontURL = chrome.runtime.getURL('public/assets/fonts/Futura/FuturaPTBold.otf');

@@ -6,8 +6,6 @@ function changeOpacity(value) {
   if (!host) return;
 
   const alpha = value / 100;
-
-  // Altera a variável CSS no elemento host
   host.style.setProperty('--popup-opacity', alpha);
 
   const opacityDisplay = shadow.querySelector('#opacityValue');

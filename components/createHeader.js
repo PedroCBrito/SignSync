@@ -12,7 +12,6 @@ function createHeader() {
   center.className = "center-container";
   const logoUrl = chrome.runtime.getURL("public/assets/icons/mini_logo.png");
 
-  // Corrigido: criando elemento de imagem
   const logoImg = document.createElement("img");
   logoImg.src = logoUrl;
   logoImg.alt = "Logo SignSync";
