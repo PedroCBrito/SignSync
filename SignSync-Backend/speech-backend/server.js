@@ -5,7 +5,7 @@ const { SpeechClient } = require("@google-cloud/speech");
 const app = express();
 const port = 3000;
 
-app.get("/", (req, res) => res.send("Servidor de transcrição ativo."));
+app.get("/", (req, res) => res.send("Server ON."));
 const server = app.listen(port, () =>
   console.log(`Server HTTP: http://localhost:${port}`)
 );
@@ -14,8 +14,6 @@ const wss = new WebSocketServer({ server });
 const speechClient = new SpeechClient();
 
 wss.on("connection", (ws) => {
-  console.log("Cliente conectado");
-
   let lastTranscript = "";
 
   const recognizeStream = speechClient
@@ -39,7 +37,7 @@ wss.on("connection", (ws) => {
           newWords.forEach((word) => {
             console.log(`[Transcrição ${isFinal ? "FINAL" : "PARCIAL"}]: ${word}`);
 
-            // Envia cada nova palavra com o transcript completo
+            // Send new word and the trancript phrase to the client
             ws.send(
               JSON.stringify({
                 word,
@@ -50,7 +48,6 @@ wss.on("connection", (ws) => {
           });
         }
 
-        // Atualiza histórico do transcript
         if (!isFinal) {
           lastTranscript = transcript;
         } else {

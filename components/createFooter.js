@@ -3,7 +3,7 @@ function createFooter() {
   footer.id = "popup-footer";
   footer.className = "popup-footer";
 
-  const transcriptionElement = document.createElement("div"); // <- trocado de <p> para <div>
+  const transcriptionElement = document.createElement("div");
   transcriptionElement.id = "transcription-text";
   transcriptionElement.className = "transcription-text";
   transcriptionElement.innerHTML = `

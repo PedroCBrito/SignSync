@@ -95,9 +95,6 @@ function getInfoContent() {
   `;
 }
 
-
-
-
 function getConfigContent() {
   return `
     <h3>Aparência</h3>
@@ -128,5 +125,6 @@ function getQuestionContent() {
     <p>3º Passo: Clique no botão "Começar".</p>
     <p>4º Passo: Abra uma página web com um vídeo</p>
     <p>5º Passo: A ferramenta já está pronta para uso</p>
+    <p>Obs: Recomendamos abaixar para 0.75 a velocidade de vídeos para melhor experiência</p>
   `;
 }
