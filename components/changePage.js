@@ -1,84 +1,58 @@
 function infoPage() {
-  const shadow = getShadowRoot();
-  if (!shadow) return;
-
-  const popupBody = shadow.querySelector('.popup-body');
-  if (popupBody && popupBody.id !== "infoBody") {
-    popupBody.remove();
-
-    const newBody = createBody("infoBody", getInfoContent());
-    shadow.querySelector('#SignSync').appendChild(newBody);
-
-    const header = createPageHeader("Sobre Nós");
-    newBody.insertBefore(header, newBody.firstChild);
-  } else if (popupBody) {
-    popupBody.remove();
-    shadow.querySelector('#SignSync').appendChild(createBody('popup-body', ''));
-  }
+  showPage("infoBody", getInfoContent, "Sobre Nós");
 }
 
-
 function configPage() {
-  const shadow = getShadowRoot();
-  if (!shadow) return;
-
-  const popupBody = shadow.querySelector('.popup-body');
-  if (popupBody && popupBody.id !== "configBody") {
-    popupBody.remove();
-  
-
-    const newBody = createBody("configBody", getConfigContent());
-    shadow.querySelector('#SignSync').appendChild(newBody);
-
-    const header = createPageHeader("Configurações");
-    newBody.insertBefore(header, newBody.firstChild);
-
-    // Event listeners
-    const opacityRange = newBody.querySelector('#opacityRange');
-    const sizeButtons = newBody.querySelectorAll('.size-button');
-
-    if (opacityRange) {
-      opacityRange.addEventListener('input', (e) => {
-        changeOpacity(e.target.value);
-      });
-    }
-
-    sizeButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        const size = button.getAttribute('data-size');
-        changeSize(size);
-        sizeButtons.forEach(btn => btn.classList.remove('selected'));
-        button.classList.add('selected');
-      });
-    });
-
-    initializeSizeControl(sizeButtons);
-    initializeOpacityControl(shadow);
-  } else if (popupBody) {
-    popupBody.remove();
-    shadow.querySelector('#SignSync').appendChild(createBody('popup-body', ''));
-  }
+  showPage("configBody", getConfigContent, "Configurações", setupConfigPage);
 }
 
 function questionPage() {
+  showPage("questionBody", getQuestionContent, "Ajuda");
+}
+
+function showPage(pageId, getContent, headerTitle, setupFn) {
   const shadow = getShadowRoot();
   if (!shadow) return;
 
-  const popupBody = shadow.querySelector('.popup-body');
+  const popupBody = shadow.getElementById(pageId);  
+  if (!popupBody) {
+    shadow.getElementById('popup-body').style.display = 'none';
 
-  if (popupBody && popupBody.id !== "questionBody") {
-    popupBody.remove();
-
-    const newBody = createBody("questionBody", getQuestionContent());
+    const newBody = createBody(pageId, getContent());
     shadow.querySelector('#SignSync').appendChild(newBody);
 
-    const header = createPageHeader("Ajuda");
+    const header = createPageHeader(headerTitle);
     newBody.insertBefore(header, newBody.firstChild);
 
-  } else if (popupBody) {
+    if (typeof setupFn === 'function') setupFn(newBody, shadow);
+  } else {
     popupBody.remove();
-    shadow.querySelector('#SignSync').appendChild(createBody('popup-body', ''));
+    shadow.getElementById('popup-body').style.display = 'block';
   }
+}
+
+
+function setupConfigPage(newBody, shadow) {
+  const opacityRange = newBody.querySelector('#opacityRange');
+  const sizeButtons = newBody.querySelectorAll('.size-button');
+
+  if (opacityRange) {
+    opacityRange.addEventListener('input', (e) => {
+      changeOpacity(e.target.value);
+    });
+  }
+
+  sizeButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const size = button.getAttribute('data-size');
+      changeSize(size);
+      sizeButtons.forEach(btn => btn.classList.remove('selected'));
+      button.classList.add('selected');
+    });
+  });
+
+  initializeSizeControl(sizeButtons);
+  initializeOpacityControl(shadow);
 }
 
 function getInfoContent() {
