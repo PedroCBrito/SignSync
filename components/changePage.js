@@ -1,84 +1,67 @@
 function infoPage() {
-  const shadow = getShadowRoot();
-  if (!shadow) return;
-
-  const popupBody = shadow.querySelector('.popup-body');
-  if (popupBody && popupBody.id !== "infoBody") {
-    popupBody.remove();
-
-    const newBody = createBody("infoBody", getInfoContent());
-    shadow.querySelector('#SignSync').appendChild(newBody);
-
-    const header = createPageHeader("Sobre Nós");
-    newBody.insertBefore(header, newBody.firstChild);
-  } else if (popupBody) {
-    popupBody.remove();
-    shadow.querySelector('#SignSync').appendChild(createBody('popup-body', ''));
-  }
+  showPage("infoBody", getInfoContent, "Sobre Nós");
 }
 
-
 function configPage() {
-  const shadow = getShadowRoot();
-  if (!shadow) return;
-
-  const popupBody = shadow.querySelector('.popup-body');
-  if (popupBody && popupBody.id !== "configBody") {
-    popupBody.remove();
-  
-
-    const newBody = createBody("configBody", getConfigContent());
-    shadow.querySelector('#SignSync').appendChild(newBody);
-
-    const header = createPageHeader("Configurações");
-    newBody.insertBefore(header, newBody.firstChild);
-
-    // Event listeners
-    const opacityRange = newBody.querySelector('#opacityRange');
-    const sizeButtons = newBody.querySelectorAll('.size-button');
-
-    if (opacityRange) {
-      opacityRange.addEventListener('input', (e) => {
-        changeOpacity(e.target.value);
-      });
-    }
-
-    sizeButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        const size = button.getAttribute('data-size');
-        changeSize(size);
-        sizeButtons.forEach(btn => btn.classList.remove('selected'));
-        button.classList.add('selected');
-      });
-    });
-
-    initializeSizeControl(sizeButtons);
-    initializeOpacityControl(shadow);
-  } else if (popupBody) {
-    popupBody.remove();
-    shadow.querySelector('#SignSync').appendChild(createBody('popup-body', ''));
-  }
+  showPage("configBody", getConfigContent, "Configurações", setupConfigPage);
 }
 
 function questionPage() {
+  showPage("questionBody", getQuestionContent, "Ajuda");
+}
+
+function dictionaryPage() {
+  showPage("dictionaryBody", getDictionaryContent, "Dicionário", setupDictionaryPage);
+}
+
+function showPage(pageId, getContent, headerTitle, setupFn) {
   const shadow = getShadowRoot();
   if (!shadow) return;
 
-  const popupBody = shadow.querySelector('.popup-body');
-
-  if (popupBody && popupBody.id !== "questionBody") {
-    popupBody.remove();
-
-    const newBody = createBody("questionBody", getQuestionContent());
+  const popupBody = shadow.getElementById(pageId);  
+  if (!popupBody) {
+    shadow.getElementById('popup-body').style.display = 'none';
+    // Remove all elements with class 'popup-body' and id different from 'popup-body'
+    const popupBodies = shadow.querySelectorAll('.popup-body');
+    popupBodies.forEach(el => {
+      if (el.id !== 'popup-body') el.remove();
+    });
+    
+    const newBody = createBody(pageId, getContent());
     shadow.querySelector('#SignSync').appendChild(newBody);
 
-    const header = createPageHeader("Ajuda");
+    const header = createPageHeader(headerTitle);
     newBody.insertBefore(header, newBody.firstChild);
 
-  } else if (popupBody) {
+    if (typeof setupFn === 'function') setupFn(newBody, shadow);
+  } else {
     popupBody.remove();
-    shadow.querySelector('#SignSync').appendChild(createBody('popup-body', ''));
+    shadow.getElementById('popup-body').style.display = 'flex';
   }
+}
+
+
+function setupConfigPage(newBody, shadow) {
+  const opacityRange = newBody.querySelector('#opacityRange');
+  const sizeButtons = newBody.querySelectorAll('.size-button');
+
+  if (opacityRange) {
+    opacityRange.addEventListener('input', (e) => {
+      changeOpacity(e.target.value);
+    });
+  }
+
+  sizeButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const size = button.getAttribute('data-size');
+      changeSize(size);
+      sizeButtons.forEach(btn => btn.classList.remove('selected'));
+      button.classList.add('selected');
+    });
+  });
+
+  initializeSizeControl(sizeButtons);
+  initializeOpacityControl(shadow);
 }
 
 function getInfoContent() {
@@ -127,4 +110,59 @@ function getQuestionContent() {
     <p>5º Passo: A ferramenta já está pronta para uso</p>
     <p>Obs: Recomendamos abaixar para 0.75 a velocidade de vídeos para melhor experiência</p>
   `;
+}
+
+function getDictionaryContent() {
+  return `
+    <div>
+      <input type="text" id="dictionarySearch" placeholder="Buscar palavra..." style="width: 100%; margin-bottom: 10px;" />
+      <ul id="dictionaryList" style="max-height: 200px; overflow-y: auto; padding-left: 0;"></ul>
+    </div>
+  `;
+}
+
+async function setupDictionaryPage(newBody) {
+  const shadow = getShadowRoot();
+  const listEl = newBody.querySelector('#dictionaryList');
+  const searchEl = newBody.querySelector('#dictionarySearch');
+  let words = [];
+
+  try {
+    const res = await fetch(chrome.runtime.getURL('public/dictionary.json'));
+    words = await res.json();
+  } catch (e) {
+    listEl.innerHTML = '<li>Erro ao carregar o dicionário.</li>';
+    return;
+  }
+
+  function renderList(filter = '') {
+    const filtered = words.filter(word => word.toLowerCase().includes(filter.toLowerCase()));
+    listEl.innerHTML = filtered.length
+      ? filtered.map(word => `<li class="dictionary-word" style="cursor:pointer; list-style:none; padding:4px 0;">${word}</li>`).join('')
+      : '<li>Nenhuma palavra encontrada.</li>';
+  }
+
+  renderList();
+
+  searchEl.addEventListener('input', e => {
+    renderList(e.target.value);
+  });
+
+  listEl.addEventListener('click', e => {
+    if (e.target.classList.contains('dictionary-word')) {
+      //alert(`Selecionado: ${e.target.textContent}`);
+      chrome.runtime.sendMessage({
+        type: "transcription-update",
+        transcription: e.target.textContent,
+        word: e.target.textContent,
+        dictionaryMessage: true,
+      });
+    }
+    shadow.getElementById('dictionaryBody').remove();
+    shadow.getElementById('popup-body').style.display = 'flex';
+    setTimeout(() => {
+      shadow.getElementById("startRecord").style.display = "block";
+      shadow.getElementById("transcriptionContent").textContent = '';
+    }, 2000);
+  });
 }

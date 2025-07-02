@@ -78,6 +78,18 @@ if (!document.getElementById("SignSync-wrapper")) {
     }, 300);
     
   });
+
+  const dictionaryButton = popup.shadowRoot.getElementById("dictionaryButton");
+  dictionaryButton.addEventListener("click", () => {
+    if (!startButton.classList.contains("visible") && startButton.style.display == "none") {
+      startButton.classList.add("visible");
+      startButton.style.display = "block";
+    } else {
+      startButton.classList.remove("visible");
+      startButton.style.display = "none";
+    }
+    dictionaryPage();
+  });
 }
 var sentWords = new Set();
 var wordTimestamps = new Map();
@@ -99,6 +111,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (iframe) {
       const now = Date.now();
 
+    if (message.dictionaryMessage){
+      WORD_EXPIRATION_MS = 5;
+    }
+
     // Expire old words
     for (const [word, timestamp] of wordTimestamps.entries()) {
       if (now - timestamp > WORD_EXPIRATION_MS) {
@@ -116,4 +132,3 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
   }
 });
-
