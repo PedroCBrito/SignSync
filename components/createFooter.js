@@ -10,12 +10,10 @@ function createFooter() {
     <div class="button-row">
         <div class="left-button">
             <button id="stopRecord" style="display: none;"><i class="fa-solid fa-circle-pause"></i></button>
-        </div>
-        <div class="left-button">
-            <button id="stopRecord" class="visible"><i class="fa-solid fa-circle-pause"></i></button>
+            <button id="dictionaryButton" class="visible"><i class="fa-solid fa-hands"></i></button>
         </div>
         <div class="center-button">
-            <button id="startRecord" class="visible"><i class="fa-solid fa-circle-play"></i></button>
+            <button id="startRecord" class="visible" style="display: block;"><i class="fa-solid fa-circle-play"></i></button>
             <p id="transcriptionContent"></p>
         </div>
     </div>

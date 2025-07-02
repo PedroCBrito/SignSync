@@ -334,7 +334,8 @@ button.visible {
 }
 
 #startRecord,
-#stopRecord {
+#stopRecord,
+#dictionaryButton {
   cursor: pointer;
   display: none; 
   color: #f5f2ec;
