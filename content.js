@@ -49,6 +49,8 @@ if (!document.getElementById("SignSync-wrapper")) {
     setTimeout(() => {
       startButton.style.display = "none";
       stopButton.style.display = "inline-block";
+      dictionaryButton.style.display = "none";
+      dictionaryButton.classList.remove("visible");
       setTimeout(() => stopButton.classList.add("visible"), 10);
     }, 300);
   });
@@ -73,6 +75,7 @@ if (!document.getElementById("SignSync-wrapper")) {
     setTimeout(() => {
       stopButton.style.display = "none";
       startButton.style.display = "block";
+      dictionaryButton.classList.add("visible");
       setTimeout(() => startButton.classList.add("visible"), 10);
       setTimeout(() => transcriptionContent.textContent = "", 100);
     }, 300);
@@ -91,9 +94,43 @@ if (!document.getElementById("SignSync-wrapper")) {
     dictionaryPage();
   });
 }
-var sentWords = new Set();
-var wordTimestamps = new Map();
-var WORD_EXPIRATION_MS = 5000;
+
+let WORD_EXPIRATION_MS = 5000;
+const sentWords = new Set();
+const wordTimestamps = new Map();
+
+
+async function sendWordsToUnitySequentially(words, iframe) {
+  const now = Date.now();
+
+  for (const [word, timestamp] of wordTimestamps.entries()) {
+    if (now - timestamp > WORD_EXPIRATION_MS) {
+      sentWords.delete(word);
+      wordTimestamps.delete(word);
+    }
+  }
+
+  for (const word of words) {
+    if (!word) {
+      continue;
+    }
+    
+    if (!sentWords.has(word)) {
+      console.log(`Enviando para Unity: ${word}`);
+    
+      iframe.contentWindow.postMessage(
+        { type: "unity-word", word: word },
+        "http://localhost:8080"
+      );
+
+      sentWords.add(word);
+      wordTimestamps.set(word, now);
+
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+  }
+}
+
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "transcription-update") {
@@ -102,33 +139,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     const shadow = popup.shadowRoot;
     const transcriptionContent = shadow.getElementById("transcriptionContent");
-    if (transcriptionContent) {
-      transcriptionContent.textContent = message.word;
-    }
-
     const iframe = shadow.querySelector("iframe.unity-iframe");
+    const words = message.dictionaryMessage ? message.word : message.glosa; 
 
     if (iframe) {
-      const now = Date.now();
-
-    if (message.dictionaryMessage){
-      WORD_EXPIRATION_MS = 5;
+      transcriptionContent.textContent = words;
+      sendWordsToUnitySequentially(words.split(/\s+/), iframe);
     }
-
-    // Expire old words
-    for (const [word, timestamp] of wordTimestamps.entries()) {
-      if (now - timestamp > WORD_EXPIRATION_MS) {
-        sentWords.delete(word);
-        wordTimestamps.delete(word);
-      }
-    }
-
-  if (!sentWords.has(message.word)) {
-    iframe.contentWindow.postMessage(
-      { type: "unity-word", word: message.word }, "http://localhost:8080");
-      sentWords.add(message.word);
-      wordTimestamps.set(message.word, now);
-    }
-  }
   }
 });
