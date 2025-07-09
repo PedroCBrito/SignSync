@@ -150,10 +150,8 @@ async function setupDictionaryPage(newBody) {
 
   listEl.addEventListener('click', e => {
     if (e.target.classList.contains('dictionary-word')) {
-      //alert(`Selecionado: ${e.target.textContent}`);
       chrome.runtime.sendMessage({
         type: "transcription-update",
-        transcription: e.target.textContent,
         word: e.target.textContent,
         dictionaryMessage: true,
       });

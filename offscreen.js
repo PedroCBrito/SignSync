@@ -57,11 +57,11 @@ async function startStreaming(streamId) {
  socket.onmessage = (event) => {
   const data = JSON.parse(event.data);
 
-  if (data.transcript || data.word) {
+  if (data.glosa) {
     chrome.runtime.sendMessage({
       type: "transcription-update",
-      transcription: data.transcript,
-      word: data.word,
+      glosa: data.glosa,
+      original: data.original,
       isFinal: data.isFinal,
     });
   }
