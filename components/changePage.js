@@ -44,6 +44,7 @@ function showPage(pageId, getContent, headerTitle, setupFn) {
 function setupConfigPage(newBody, shadow) {
   const opacityRange = newBody.querySelector('#opacityRange');
   const sizeButtons = newBody.querySelectorAll('.size-button');
+  const transcriptionButtons = newBody.querySelectorAll('.transcription-button');
 
   if (opacityRange) {
     opacityRange.addEventListener('input', (e) => {
@@ -60,9 +61,37 @@ function setupConfigPage(newBody, shadow) {
     });
   });
 
+  transcriptionButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const format = button.getAttribute('data-format');
+      const useGloss = (format === 'glosa');
+
+      chrome.storage.local.set({ useGloss: useGloss });
+
+      transcriptionButtons.forEach(btn => btn.classList.remove('selected'));
+      button.classList.add('selected');
+    });
+  });
+
   initializeSizeControl(sizeButtons);
   initializeOpacityControl(shadow);
+  initialTranscriptionFormat(transcriptionButtons);
 }
+
+function initialTranscriptionFormat(transcriptionButtons) {
+    chrome.storage.local.get({ useGloss: false }, (data) => {
+      const formatToSelect = data.useGloss ? 'glosa' : 'portuguese';
+      transcriptionButtons.forEach(button => {
+        const format = button.getAttribute('data-format');
+        if (format === formatToSelect) {
+          button.classList.add('selected');
+        } else {
+          button.classList.remove('selected');
+        }
+      });
+  });
+}
+
 
 function getInfoContent() {
   const logoUrl = chrome.runtime.getURL("assets/icons/logo_SignSync.png");
@@ -95,9 +124,9 @@ function getConfigContent() {
       </div>
 
       <h4>Formato da transcrição</h4>
-      <div class="size-options">
-        <button class="size-button" data-size="small">Glosa</button>
-        <button class="size-button" data-size="medium">Português</button>
+      <div class="transcription-options">
+        <button class="transcription-button" data-format="portuguese">Português</button>
+        <button class="transcription-button" data-format="glosa">Glosa</button>
       </div>
     </div>
   `;

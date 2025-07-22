@@ -182,14 +182,15 @@
   accent-color: #32ad67;
 }
 
-#SignSync .size-options {
+#SignSync .size-options, .transcription-options {
   display: flex;
   gap: 10px;
   margin-top: 10px;
   justify-content: center;
 }
 
-#SignSync .size-button {
+#SignSync .size-button,
+#SignSync .transcription-button {
   background-color: #bcbcbc;
   padding: 6px 12px;
   border-radius: 6px;
@@ -198,14 +199,15 @@
   border: 2px solid transparent;
 }
 
-#SignSync .size-button.selected {
+#SignSync .size-button.selected,
+#SignSync .transcription-button.selected {
   border: 2px solid #32ad67;
 }
 
-#SignSync .size-button:hover {
+#SignSync .size-button:hover,
+#SignSync .transcription-button:hover {
   background-color: #999;
 }
-
 
 #SignSync.small .popup-body {
   height: 250px;
