@@ -44,6 +44,7 @@ function showPage(pageId, getContent, headerTitle, setupFn) {
 function setupConfigPage(newBody, shadow) {
   const opacityRange = newBody.querySelector('#opacityRange');
   const sizeButtons = newBody.querySelectorAll('.size-button');
+  const transcriptionButtons = newBody.querySelectorAll('.transcription-button');
 
   if (opacityRange) {
     opacityRange.addEventListener('input', (e) => {
@@ -60,9 +61,37 @@ function setupConfigPage(newBody, shadow) {
     });
   });
 
+  transcriptionButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const format = button.getAttribute('data-format');
+      const useGloss = (format === 'glosa');
+
+      chrome.storage.local.set({ useGloss: useGloss });
+
+      transcriptionButtons.forEach(btn => btn.classList.remove('selected'));
+      button.classList.add('selected');
+    });
+  });
+
   initializeSizeControl(sizeButtons);
   initializeOpacityControl(shadow);
+  initialTranscriptionFormat(transcriptionButtons);
 }
+
+function initialTranscriptionFormat(transcriptionButtons) {
+    chrome.storage.local.get({ useGloss: false }, (data) => {
+      const formatToSelect = data.useGloss ? 'glosa' : 'portuguese';
+      transcriptionButtons.forEach(button => {
+        const format = button.getAttribute('data-format');
+        if (format === formatToSelect) {
+          button.classList.add('selected');
+        } else {
+          button.classList.remove('selected');
+        }
+      });
+  });
+}
+
 
 function getInfoContent() {
   const logoUrl = chrome.runtime.getURL("assets/icons/logo_SignSync.png");
@@ -80,22 +109,24 @@ function getInfoContent() {
 
 function getConfigContent() {
   return `
-    <h3>Aparência</h3>
-
     <div class="appearance-section">
-      <!-- Controle de opacidade desabilitado
       <label for="opacityRange">Opacidade</label>
       <div class="opacity-control">
         <input type="range" id="opacityRange" min="0" max="100" value="--popup-opacity">
         <span id="opacityValue">100%</span>
       </div>
-      -->
 
       <h4>Tamanho</h4>
       <div class="size-options">
         <button class="size-button" data-size="small">Pequeno</button>
         <button class="size-button" data-size="medium">Médio</button>
         <button class="size-button" data-size="large">Grande</button>
+      </div>
+
+      <h4>Formato da transcrição</h4>
+      <div class="transcription-options">
+        <button class="transcription-button" data-format="portuguese">Português</button>
+        <button class="transcription-button" data-format="glosa">Glosa</button>
       </div>
     </div>
   `;
