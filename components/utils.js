@@ -22,6 +22,7 @@ function createIconButton(iconClass, className) {
     const closeButton = document.createElement("span");
     closeButton.className = "close-button";
     closeButton.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+    closeButton.title = "Fechar";
     closeButton.onclick = () => document.getElementById('SignSync-wrapper').remove();
     return closeButton;
   }

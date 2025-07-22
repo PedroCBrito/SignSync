@@ -80,22 +80,24 @@ function getInfoContent() {
 
 function getConfigContent() {
   return `
-    <h3>Aparência</h3>
-
     <div class="appearance-section">
-      <!-- Controle de opacidade desabilitado
       <label for="opacityRange">Opacidade</label>
       <div class="opacity-control">
         <input type="range" id="opacityRange" min="0" max="100" value="--popup-opacity">
         <span id="opacityValue">100%</span>
       </div>
-      -->
 
       <h4>Tamanho</h4>
       <div class="size-options">
         <button class="size-button" data-size="small">Pequeno</button>
         <button class="size-button" data-size="medium">Médio</button>
         <button class="size-button" data-size="large">Grande</button>
+      </div>
+
+      <h4>Formato da transcrição</h4>
+      <div class="size-options">
+        <button class="size-button" data-size="small">Glosa</button>
+        <button class="size-button" data-size="medium">Português</button>
       </div>
     </div>
   `;
