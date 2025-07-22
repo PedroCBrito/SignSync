@@ -24,19 +24,16 @@ async function streamTranslateToGlosa(ws, textToTranslate) {
     Remova artigos, preposições e conjunções que não são usados na sinalização.
     Retorne apenas o texto em Glosa, sem explicações, textos adicionais ou pontuação.
 
-    Exemplo 1:
+    Exemplos:
     Português: "Eu vou para a casa de minha mãe amanhã."
     Glosa: "AMANHÃ MÃE CASA EU IR."
 
-    Exemplo 2:
     Português: "Qual é o seu nome?"
     Glosa: "NOME SEU QUAL?"
 
-    Exemplo 3:
     Português: "Eu quero comer uma maçã vermelha."
     Glosa: "MAÇÃ VERMELHA EU QUERER COMER."
 
-    ---
     Traduza a seguinte frase para a Glosa de LIBRAS:
     Português: "${textToTranslate}"
   `;

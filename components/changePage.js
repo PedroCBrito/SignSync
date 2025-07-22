@@ -30,7 +30,7 @@ function showPage(pageId, getContent, headerTitle, setupFn) {
     const newBody = createBody(pageId, getContent());
     shadow.querySelector('#SignSync').appendChild(newBody);
 
-    const header = createPageHeader(headerTitle);
+    const header = createPageHeader(pageId, headerTitle);
     newBody.insertBefore(header, newBody.firstChild);
 
     if (typeof setupFn === 'function') setupFn(newBody, shadow);
