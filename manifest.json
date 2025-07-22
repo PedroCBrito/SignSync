@@ -4,7 +4,7 @@
   "name": "SignSync",
   "version": "1.0",
   "description": "Exibe uma extensão para tradução de conteúdos para LIBRAS",
-  "permissions": ["activeTab", "scripting", "tabCapture", "offscreen"],
+  "permissions": ["activeTab", "scripting", "tabCapture", "offscreen", "storage"],
   "host_permissions": ["*://*/*"],
   "action": {
     "default_title": "Mostrar Popup",

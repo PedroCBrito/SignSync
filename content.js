@@ -140,11 +140,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const shadow = popup.shadowRoot;
     const transcriptionContent = shadow.getElementById("transcriptionContent");
     const iframe = shadow.querySelector("iframe.unity-iframe");
-    const words = message.dictionaryMessage ? message.word : message.glosa; 
 
-    if (iframe) {
-      transcriptionContent.textContent = words;
-      sendWordsToUnitySequentially(words.split(/\s+/), iframe);
-    }
+    chrome.storage.local.get({useGloss: false }, (data) => {
+      const useGloss = data.useGloss;
+      const unityWords = message.dictionaryMessage ? message.word : message.glosa;
+      const transcriptionWords = message.dictionaryMessage ? message.word : (useGloss ? message.glosa : message.original);
+
+      if (iframe) {
+        transcriptionContent.textContent = transcriptionWords;
+        sendWordsToUnitySequentially(unityWords.split(/\s+/), iframe);
+      }
+    });
   }
 });
