@@ -345,3 +345,9 @@ button.visible {
   border: none;
   font-size: 20px;
 }
+
+#startRecord i:hover,
+#stopRecord i:hover,
+#dictionaryButton i:hover {
+  color: #bcbcbc;
+}
