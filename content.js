@@ -42,7 +42,8 @@ if (!document.getElementById("SignSync-wrapper")) {
   startButton.addEventListener("click", () => {
     chrome.runtime.sendMessage({
       type: "start-recording-request",
-      target: "service-worker"
+      target: "service-worker",
+      sourceType: 'tab'
     });
   
     startButton.classList.remove("visible");
@@ -51,6 +52,7 @@ if (!document.getElementById("SignSync-wrapper")) {
       stopButton.style.display = "inline-block";
       dictionaryButton.style.display = "none";
       dictionaryButton.classList.remove("visible");
+      microphoneButton.style.display = "none";
       setTimeout(() => stopButton.classList.add("visible"), 10);
     }, 300);
   });
@@ -60,7 +62,7 @@ if (!document.getElementById("SignSync-wrapper")) {
     setTimeout(() => {
       chrome.runtime.sendMessage({
         type: "stop-recording",
-        target: "offscreen",
+        target: "service-worker",
       });
     }, 500);
 
@@ -76,6 +78,7 @@ if (!document.getElementById("SignSync-wrapper")) {
       stopButton.style.display = "none";
       startButton.style.display = "block";
       dictionaryButton.classList.add("visible");
+      microphoneButton.style.display = "block";
       setTimeout(() => startButton.classList.add("visible"), 10);
       setTimeout(() => transcriptionContent.textContent = "", 100);
     }, 300);
@@ -83,6 +86,8 @@ if (!document.getElementById("SignSync-wrapper")) {
   });
 
   const dictionaryButton = popup.shadowRoot.getElementById("dictionaryButton");
+  const microphoneButton = popup.shadowRoot.getElementById("microphoneButton");
+
   dictionaryButton.addEventListener("click", () => {
     if (!startButton.classList.contains("visible") && startButton.style.display == "none") {
       startButton.classList.add("visible");
@@ -93,15 +98,37 @@ if (!document.getElementById("SignSync-wrapper")) {
     }
     dictionaryPage();
   });
+
+
+  microphoneButton.addEventListener("click", () => {
+    chrome.runtime.sendMessage({
+      type: "start-recording-request",
+      target: "service-worker",
+      sourceType: 'mic'
+    });
+      
+    if (!startButton.classList.contains("visible") && startButton.style.display == "none") {
+      startButton.classList.add("visible");
+      startButton.style.display = "block";
+      dictionaryButton.style.display = "block";
+      microphoneButton.style.display = "block";
+      stopButton.style.display = "none";
+    } else {
+      startButton.classList.remove("visible");
+      startButton.style.display = "none";
+      dictionaryButton.classList.remove("visible");
+      dictionaryButton.style.display = "none";
+      microphoneButton.style.display = "none";
+      stopButton.style.display = "inline-block";
+    }
+  });
 }
-
-let WORD_EXPIRATION_MS = 5000;
-const sentWords = new Set();
-const wordTimestamps = new Map();
-
 
 async function sendWordsToUnitySequentially(words, iframe) {
   const now = Date.now();
+  let WORD_EXPIRATION_MS = 5000;
+  const sentWords = new Set();
+  const wordTimestamps = new Map();
 
   for (const [word, timestamp] of wordTimestamps.entries()) {
     if (now - timestamp > WORD_EXPIRATION_MS) {
