@@ -6,7 +6,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const app = express();
 const port = 3000;
 
-// Substitua 'SUA_CHAVE_API_GEMINI' pela sua chave real
+// Substitua 'SUA_CHAVE_API_GEMINI' pela sua chave real e mantenha-a segura
 const genAI = new GoogleGenerativeAI('SUA_CHAVE_API_GEMINI');
 const geminiModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
@@ -64,7 +64,6 @@ async function streamTranslateToGlosa(ws, textToTranslate) {
 
   } catch (error) {
     console.error("Erro na API Gemini (Stream):", error);
-    // Em caso de erro, informa o cliente.
     ws.send(JSON.stringify({
         glosa: `[ERRO DE TRADUÇÃO]`,
         original: textToTranslate,
@@ -96,6 +95,9 @@ wss.on("connection", (ws) => {
         if (result?.alternatives[0]) {
           const transcript = result.alternatives[0].transcript;
           
+          const status = result.isFinal ? "Final" : "Parcial";
+          console.log(`[Speech-to-Text - ${status}]: ${transcript}`);
+          
           if (transcript) {
             while (true) {
                 const unprocessedPart = transcript.substring(processedChars);
@@ -109,6 +111,13 @@ wss.on("connection", (ws) => {
                 } else {
                     break;
                 }
+            }
+            if (result.isFinal) {
+                const finalUtterance = transcript.substring(processedChars).trim();
+                if (finalUtterance) {
+                    sendBoundTranslation(finalUtterance);
+                }
+                processedChars = 0;
             }
           }
         }

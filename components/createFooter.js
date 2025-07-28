@@ -11,6 +11,7 @@ function createFooter() {
         <div class="left-button">
             <button id="stopRecord" style="display: none;" title="Parar"><i class="fa-solid fa-circle-pause"></i></button>
             <button id="dictionaryButton" class="visible" title="Dicionário"><i class="fa-solid fa-hands"></i></button>
+            <button id="microphoneButton" style="display: block;" title="Utilizar Microfone"><i class="fa-solid fa-microphone"></i></i></button>
         </div>
         <div class="center-button">
             <button id="startRecord" class="visible" style="display: block;" title="Iniciar"><i class="fa-solid fa-circle-play"></i></button>

@@ -337,7 +337,8 @@ button.visible {
 
 #startRecord,
 #stopRecord,
-#dictionaryButton {
+#dictionaryButton,
+#microphoneButton {
   cursor: pointer;
   display: none; 
   color: #f5f2ec;
@@ -348,6 +349,7 @@ button.visible {
 
 #startRecord i:hover,
 #stopRecord i:hover,
-#dictionaryButton i:hover {
+#dictionaryButton i:hover,
+#microphoneButton i:hover {
   color: #bcbcbc;
 }

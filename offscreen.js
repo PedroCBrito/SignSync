@@ -1,12 +1,12 @@
 let socket;
 let audioContext;
 let processor;
-let tabStream;
+let audioStream;
 
 chrome.runtime.onMessage.addListener(async (message) => {
   if (message.target === "offscreen") {
     if (message.type === "start-recording") {
-      await startStreaming(message.data);
+      await startStreaming(message.data.streamId);
     } else if (message.type === "stop-recording") {
       stopStreaming();
     }
@@ -14,87 +14,69 @@ chrome.runtime.onMessage.addListener(async (message) => {
 });
 
 async function startStreaming(streamId) {
+  if (!streamId) {
+    console.error("Offscreen: streamId not provided.");
+    return;
+  }
+
   socket = new WebSocket("ws://localhost:3000/audio");
   socket.binaryType = "arraybuffer";
 
   socket.onopen = async () => {
-    // Captures the tab audio using the streamId
-    tabStream = await navigator.mediaDevices.getUserMedia({
-      audio: {
-        mandatory: {
-          chromeMediaSource: "tab",
-          chromeMediaSourceId: streamId,
+    try {
+      const streamConstraints = {
+        audio: {
+          mandatory: {
+            chromeMediaSource: "tab",
+            chromeMediaSourceId: streamId,
+          },
         },
-      },
-      video: false,
-    });
+        video: false,
+      };
+      audioStream = await navigator.mediaDevices.getUserMedia(streamConstraints);
 
-    // Creates the audio context with a 16000Hz sample rate
-    audioContext = new AudioContext({ sampleRate: 16000 });
+      audioContext = new AudioContext({ sampleRate: 16000 });
 
-    // Adds the custom processor (AudioWorklet)
-    await audioContext.audioWorklet.addModule("pcm-processor.js");
-    const source = audioContext.createMediaStreamSource(tabStream);
-    processor = new AudioWorkletNode(audioContext, "pcm-processor");
+      await audioContext.audioWorklet.addModule("pcm-processor.js");
+      const source = audioContext.createMediaStreamSource(audioStream);
+      processor = new AudioWorkletNode(audioContext, "pcm-processor");
 
-    // Receives processed audio buffers and sends them via WebSocket
-    processor.port.onmessage = (event) => {
-      const float32Samples = event.data;
-      const int16Samples = float32ToInt16(float32Samples);
-      if (socket.readyState === WebSocket.OPEN) {
-        socket.send(int16Samples.buffer);
-      }
-    };
+      processor.port.onmessage = (event) => {
+        const pcmData = event.data;
+        if (socket && socket.readyState === WebSocket.OPEN) {
+          socket.send(pcmData.buffer);
+        }
+      };
 
-    source.connect(processor);
-    processor.connect(audioContext.destination);
+      source.connect(processor);
+      processor.connect(audioContext.destination);
 
-    const outputNode = audioContext.createGain();
-    source.connect(outputNode);
-    outputNode.connect(audioContext.destination);
+      const outputNode = audioContext.createGain();
+      source.connect(outputNode);
+      outputNode.connect(audioContext.destination);
+      
+    } catch (error) {
+      console.error("Error getting audio stream in offscreen:", error);
+    }
   };
 
- socket.onmessage = (event) => {
-  const data = JSON.parse(event.data);
-
-  if (data.glosa) {
-    chrome.runtime.sendMessage({
-      type: "transcription-update",
-      glosa: data.glosa,
-      original: data.original,
-      isFinal: data.isFinal,
-    });
-  }
-};
-
+  socket.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    if (data.glosa) {
+      chrome.runtime.sendMessage({
+        type: "transcription-update",
+        glosa: data.glosa,
+        original: data.original,
+        isFinal: data.isFinal,
+      });
+    }
+  };
 }
 
 function stopStreaming() {
-  if (processor) {
-    processor.disconnect();
-    processor = null;
-  }
-
-  if (audioContext) {
-    audioContext.close();
-    audioContext = null;
-  }
-
-  if (tabStream) {
-    tabStream.getTracks().forEach((track) => track.stop());
-    tabStream = null;
-  }
-
-  if (socket && socket.readyState === WebSocket.OPEN) {
-    socket.close();
-    socket = null;
-  }
-}
-
-function float32ToInt16(float32Array) {
-  const int16Array = new Int16Array(float32Array.length);
-  for (let i = 0; i < float32Array.length; i++) {
-    int16Array[i] = Math.max(-1, Math.min(1, float32Array[i])) * 0x7fff;
-  }
-  return int16Array;
+  if (processor) { processor.disconnect(); processor = null; }
+  if (audioContext) { audioContext.close(); audioContext = null; }
+  if (audioStream) { audioStream.getTracks().forEach((track) => track.stop()); audioStream = null; }
+  if (socket && socket.readyState === WebSocket.OPEN) { socket.close(); socket = null; }
+  console.log("Streaming stopped.");
 }

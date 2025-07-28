@@ -11,6 +11,7 @@ node_modules
 dist
 dist-ssr
 *.local
+signsync-459720-43c3e4cb8e37.json
 
 # Editor directories and files
 .vscode/*
