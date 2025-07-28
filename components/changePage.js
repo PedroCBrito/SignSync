@@ -21,6 +21,8 @@ function showPage(pageId, getContent, headerTitle, setupFn) {
   const popupBody = shadow.getElementById(pageId);  
   if (!popupBody) {
     shadow.getElementById('popup-body').style.display = 'none';
+    shadow.getElementById('startRecord').style.display = 'none';
+    shadow.getElementById('startRecord').classList.remove('visible');
     // Remove all elements with class 'popup-body' and id different from 'popup-body'
     const popupBodies = shadow.querySelectorAll('.popup-body');
     popupBodies.forEach(el => {
@@ -37,6 +39,8 @@ function showPage(pageId, getContent, headerTitle, setupFn) {
   } else {
     popupBody.remove();
     shadow.getElementById('popup-body').style.display = 'flex';
+    shadow.getElementById('startRecord').style.display = 'block';
+    shadow.getElementById('startRecord').classList.add('visible');
   }
 }
 

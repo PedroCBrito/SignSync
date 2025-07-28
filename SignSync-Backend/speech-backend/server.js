@@ -94,10 +94,7 @@ wss.on("connection", (ws) => {
         const result = data.results[0];
         if (result?.alternatives[0]) {
           const transcript = result.alternatives[0].transcript;
-          
-          const status = result.isFinal ? "Final" : "Parcial";
-          console.log(`[Speech-to-Text - ${status}]: ${transcript}`);
-          
+                    
           if (transcript) {
             while (true) {
                 const unprocessedPart = transcript.substring(processedChars);
