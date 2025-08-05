@@ -9,7 +9,7 @@ function createBody(idName, htmlContent) {
   if (idName === 'popup-body') {
     // Cria e anexa o iframe
     const iframe = document.createElement('iframe');
-    iframe.src = "http://localhost:8080";
+    iframe.src = "https://signsync-unity.web.app";
     iframe.className = "unity-iframe";
     iframe.style.width = '100%';
     iframe.style.height = '100%';

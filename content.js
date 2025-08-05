@@ -147,7 +147,7 @@ async function sendWordsToUnitySequentially(words, iframe) {
     
       iframe.contentWindow.postMessage(
         { type: "unity-word", word: word },
-        "http://localhost:8080"
+        "https://signsync-unity.web.app"
       );
 
       sentWords.add(word);
