@@ -7,7 +7,7 @@ const app = express();
 const port = 3000;
 
 // Substitua 'SUA_CHAVE_API_GEMINI' pela sua chave real e mantenha-a segura
-const genAI = new GoogleGenerativeAI('SUA_CHAVE_API_GEMINI');
+const genAI = new GoogleGenerativeAI('AIzaSyDzs9Wfv6K7V9oXeqUbhT8THqGwfi5ghDU');
 const geminiModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 app.get("/", (req, res) => res.send("Servidor de Tradução para Glosa está ATIVO."));
