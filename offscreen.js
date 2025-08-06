@@ -19,7 +19,7 @@ async function startStreaming(streamId) {
     return;
   }
 
-  socket = new WebSocket("ws://localhost:3000/audio");
+  socket = new WebSocket("ws://tradutor-glosa-service-50664657729.southamerica-east1.run.app/audio");
   socket.binaryType = "arraybuffer";
 
   socket.onopen = async () => {
