@@ -28,8 +28,19 @@ docker-compose up --build
 2. Open the browser and test the extension
 3. For error will be reflected in the console
 
+<span style="font-size:small;">
+  OR you can create your own server in Cloud Run, but need to use your own API keys.
+  
+  To make this need to run the instructions in: SignSync-Backend\speech-backend\README.md
+</span>
+
+
 
 ## Running Unity
+<span style="color:red; font-size:small;">
+  Obs. The new version uses the online unity server, so it's not necessary to create the docker.
+</span>
+
 1. Follow the following commands
 ```
 cd unity
