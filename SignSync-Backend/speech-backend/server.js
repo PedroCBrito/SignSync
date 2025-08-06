@@ -6,8 +6,14 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const app = express();
 const port = 3000;
 
-// Substitua 'SUA_CHAVE_API_GEMINI' pela sua chave real e mantenha-a segura
-const genAI = new GoogleGenerativeAI('AIzaSyDzs9Wfv6K7V9oXeqUbhT8THqGwfi5ghDU');
+const apiKey = process.env.SUA_CHAVE_API_GEMINI;
+
+if (!apiKey) {
+  console.error("ERRO CRÍTICO: A variável de ambiente SUA_CHAVE_API_GEMINI não foi encontrada!");
+  process.exit(1);
+}
+
+const genAI = new GoogleGenerativeAI(apiKey);
 const geminiModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 app.get("/", (req, res) => res.send("Servidor de Tradução para Glosa está ATIVO."));
