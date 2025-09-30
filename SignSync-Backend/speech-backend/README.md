@@ -2,7 +2,7 @@
 ```
 rem --- Variáveis de Configuração para Windows CMD ---
 set PROJECT_ID=signsync-459720
-set REGION=south
+set REGION=southamerica-east1
 set REPO_NAME=signsync-repo1
 set IMAGE_NAME=tradutor-glosa1
 

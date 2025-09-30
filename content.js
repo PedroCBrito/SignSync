@@ -126,7 +126,7 @@ if (!document.getElementById("SignSync-wrapper")) {
 
 async function sendWordsToUnitySequentially(words, iframe) {
   const now = Date.now();
-  let WORD_EXPIRATION_MS = 5000;
+  let WORD_EXPIRATION_MS = 10000;
   const sentWords = new Set();
   const wordTimestamps = new Map();
 
