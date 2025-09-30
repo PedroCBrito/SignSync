@@ -54,7 +54,7 @@
 
         // Send data to Unity
         if (typeof unityInstance !== "undefined") {
-          unityInstance.SendMessage("Player", "ReceberMensagem", data.word);
+          unityInstance.SendMessage("Kura", "ReceberMensagem", data.word);
         } else {
           console.error("Unity não está carregado.");
         }
