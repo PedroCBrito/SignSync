@@ -80,7 +80,7 @@
   font-family: 'Futura Bold', sans-serif !important;
   overflow-y: auto;
   transition: height 0.3s ease, padding 0.3s ease;
-  background-color: rgba(245, 242, 236, var(--popup-opacity));
+  background-color: #c2c1bd;
 }
 
 #SignSync .popup-footer {

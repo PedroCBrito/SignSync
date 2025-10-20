@@ -6,15 +6,19 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const app = express();
 const port = 3000;
 
-const apiKey = process.env.SUA_CHAVE_API_GEMINI;
+// --- Configurações de Desempenho ---
+const WORD_LIMIT_FOR_TRANSLATION = 8; // Envia para tradução a cada 8 palavras.
+const PAUSE_DETECTION_THRESHOLD_MS = 700; // Considera uma pausa se não houver novas palavras por 700ms.
 
+const apiKey = process.env.SUA_CHAVE_API_GEMINI;
 if (!apiKey) {
-  console.error("ERRO CRÍTICO: A variável de ambiente SUA_CHAVE_API_GEMINI não foi encontrada!");
-  process.exit(1);
+  throw new Error("A variável de ambiente SUA_CHAVE_API_GEMINI não está definida.");
 }
 
 const genAI = new GoogleGenerativeAI(apiKey);
-const geminiModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+// <<< OTIMIZAÇÃO 1: Troca do Modelo >>>
+// gemini-pro é geralmente mais rápido para tarefas de tradução em tempo real.
+const geminiModel = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
 
 app.get("/", (req, res) => res.send("Servidor de Tradução para Glosa está ATIVO."));
 const server = app.listen(port, () =>
@@ -24,25 +28,11 @@ const wss = new WebSocketServer({ server });
 const speechClient = new SpeechClient();
 
 async function streamTranslateToGlosa(ws, textToTranslate) {
-  const prompt = `
-    Você é um tradutor especialista de português do Brasil para a estrutura gramatical de Glosa de LIBRAS.
-    Sua tarefa é reescrever a frase em português para a ordem de palavras e estrutura corretas para LIBRAS.
-    Remova artigos, preposições e conjunções que não são usados na sinalização.
-    Retorne apenas o texto em Glosa, sem explicações, textos adicionais ou pontuação.
-
-    Exemplos:
-    Português: "Eu vou para a casa de minha mãe amanhã."
-    Glosa: "AMANHÃ MÃE CASA EU IR."
-
-    Português: "Qual é o seu nome?"
-    Glosa: "NOME SEU QUAL?"
-
-    Português: "Eu quero comer uma maçã vermelha."
-    Glosa: "MAÇÃ VERMELHA EU QUERER COMER."
-
-    Traduza a seguinte frase para a Glosa de LIBRAS:
-    Português: "${textToTranslate}"
-  `;
+  if (!textToTranslate || textToTranslate.trim() === "") {
+    return;
+  }
+  
+  const prompt = `Traduza para a Glosa de LIBRAS, seguindo a estrutura SUJEITO-OBJETO-VERBO, sem artigos, preposições ou pontuação. Exemplos: (Qual seu nome? -> NOME SEU QUAL?), (Vou para casa amanhã. -> AMANHÃ CASA EU IR). FRASE: "${textToTranslate}"`;
 
   try {
     const streamResult = await geminiModel.generateContentStream(prompt);
@@ -83,59 +73,76 @@ wss.on("connection", (ws) => {
 
   const sendBoundTranslation = streamTranslateToGlosa.bind(null, ws);
   
-  let processedChars = 0;
+  let fullTranscript = "";
+  let processedChars = 0; 
+  let pauseTimer = null;
+
+  const flushRemainingBufferAndReset = () => {
+    if (pauseTimer) clearTimeout(pauseTimer);
+    
+    const remainingText = fullTranscript.substring(processedChars).trim();
+    if (remainingText) {
+      sendBoundTranslation(remainingText);
+    }
+    
+    fullTranscript = "";
+    processedChars = 0;
+  };
 
   const recognizeStream = speechClient
     .streamingRecognize({
       config: {
         encoding: "LINEAR16",
-        sampleRateHertz: 16000, 
+        sampleRateHertz: 16000,
         languageCode: "pt-BR",
         enableAutomaticPunctuation: true,
       },
       interimResults: true,
     })
     .on("data", async (data) => {
-      if (data.results && data.results.length > 0) {
-        const result = data.results[0];
-        if (result?.alternatives[0]) {
-          const transcript = result.alternatives[0].transcript;
-                    
-          if (transcript) {
-            while (true) {
-                const unprocessedPart = transcript.substring(processedChars);
-                const match = unprocessedPart.match(/(.*?[.,?!])\s+\w/);
+      if (pauseTimer) clearTimeout(pauseTimer);
 
-                if (match) {
-                    const sentenceToTranslate = match[1].trim();                    
-                    processedChars += match[1].length;
-                    
-                    sendBoundTranslation(sentenceToTranslate);
-                } else {
-                    break;
-                }
+      if (data.results?.[0]?.alternatives?.[0]) {
+        fullTranscript = data.results[0].alternatives[0].transcript;
+
+        while (true) {
+            const unprocessedPart = fullTranscript.substring(processedChars);
+            const words = unprocessedPart.trim().split(/\s+/).filter(word => word.length > 0);
+
+            if (words.length >= WORD_LIMIT_FOR_TRANSLATION) {
+                const chunkToSend = words.slice(0, WORD_LIMIT_FOR_TRANSLATION).join(" ");
+                console.log(`Enviando: "${chunkToSend}"`);
+                
+                sendBoundTranslation(chunkToSend);
+
+                const newPosition = fullTranscript.indexOf(chunkToSend, processedChars) + chunkToSend.length;
+                processedChars = newPosition;
+            } else {
+                break;
             }
-            if (result.isFinal) {
-                const finalUtterance = transcript.substring(processedChars).trim();
-                if (finalUtterance) {
-                    sendBoundTranslation(finalUtterance);
-                }
-                processedChars = 0;
-            }
-          }
+        }
+
+        if (data.results[0].isFinal) {
+          console.log("[Gatilho isFinal]: Fim da sentença detectado.");
+          flushRemainingBufferAndReset();
+        } 
+        else {
+          pauseTimer = setTimeout(() => {
+            console.log(`[Gatilho de Pausa]: Pausa de ${PAUSE_DETECTION_THRESHOLD_MS}ms detectada.`);
+            flushRemainingBufferAndReset();
+          }, PAUSE_DETECTION_THRESHOLD_MS);
         }
       }
     })
-    .on("error", (err) => {
-      console.error("Erro no stream de reconhecimento da fala:", err.message);
-    })
+    .on("error", (err) => console.error("Erro no stream de reconhecimento da fala:", err.message))
     .on("end", () => {
-        console.log("Stream de reconhecimento finalizado.");
+      console.log("Stream de reconhecimento finalizado.");
+      flushRemainingBufferAndReset();
     });
 
   ws.on("message", (audioChunk) => {
     if (recognizeStream.writable) {
-        recognizeStream.write(audioChunk);
+      recognizeStream.write(audioChunk);
     }
   });
 
@@ -144,3 +151,4 @@ wss.on("connection", (ws) => {
     recognizeStream.end();
   });
 });
+

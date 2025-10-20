@@ -114,12 +114,13 @@ function getInfoContent() {
 function getConfigContent() {
   return `
     <div class="appearance-section">
+    <!-- 
       <label for="opacityRange">Opacidade</label>
       <div class="opacity-control">
         <input type="range" id="opacityRange" min="0" max="100" value="--popup-opacity">
         <span id="opacityValue">100%</span>
       </div>
-
+    -->
       <h4>Tamanho</h4>
       <div class="size-options">
         <button class="size-button" data-size="small">Pequeno</button>
