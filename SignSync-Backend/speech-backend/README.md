@@ -18,5 +18,5 @@ docker push %REGION%-docker.pkg.dev/%PROJECT_ID%/%REPO_NAME%/%IMAGE_NAME%:latest
 
 ### 2 - Deploy the changes
 ```
-gcloud run deploy tradutor-glosa-service --image=%REGION%-docker.pkg.dev/%PROJECT_ID%/%REPO_NAME%/%IMAGE_NAME%:latest --platform=managed --region=%REGION% --port=3000 --allow-unauthenticated --session-affinity --set-env-vars="SUA_CHAVE_API_GEMINI=SUA_NOVA_CHAVE_SECRETA_AQUI"
+gcloud run deploy tradutor-glosa-service --image=%REGION%-docker.pkg.dev/%PROJECT_ID%/%REPO_NAME%/%IMAGE_NAME%:latest --platform=managed --region=%REGION% --port=3000 --allow-unauthenticated --session-affinity --set-env-vars="SUA_CHAVE_API_GEMINI=INSIRA_SUA_CHAVE_API_GEMINI" --min-instances=1 --max-instances=10
 ```

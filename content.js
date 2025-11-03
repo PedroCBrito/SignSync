@@ -1,13 +1,34 @@
+let finalizedOriginalChunks = [];
+let finalizedGlosaChunks = [];
+
+function resetTranscriptionState() {
+  finalizedOriginalChunks = [];
+  finalizedGlosaChunks = [];
+}
+
+function updateTranscriptionDisplay(popupShadow, originalText, glosaText) {
+  const transcriptionContent = popupShadow.getElementById("transcriptionContent");
+  if (!transcriptionContent) return;
+
+  chrome.storage.local.get({ useGloss: false }, (data) => {
+    const useGloss = data.useGloss;
+    transcriptionContent.textContent = useGloss 
+      ? glosaText.trim() 
+      : originalText.trim();
+  });
+}
+
 if (!document.getElementById("SignSync-wrapper")) {
   injectFontAwesome();
   const popup = createPopup();
   document.body.appendChild(popup); 
   enableDrag(popup.shadowRoot.querySelector("#SignSync"));
 
-
   const startButton = popup.shadowRoot.getElementById("startRecord");
   const stopButton = popup.shadowRoot.getElementById("stopRecord");
   const permissionStatus = popup.shadowRoot.getElementById("permissionStatus");
+  const dictionaryButton = popup.shadowRoot.getElementById("dictionaryButton");
+  const microphoneButton = popup.shadowRoot.getElementById("microphoneButton");
 
   function showError(message) {
     permissionStatus.textContent = message;
@@ -19,7 +40,6 @@ if (!document.getElementById("SignSync-wrapper")) {
   }
 
   async function checkRecordingState() {
-
     const contexts = await chrome.runtime.getContexts({});
     const offscreenDocument = contexts.find(
       (c) => c.contextType === "OFFSCREEN_DOCUMENT"
@@ -40,6 +60,8 @@ if (!document.getElementById("SignSync-wrapper")) {
   document.addEventListener("DOMContentLoaded", checkRecordingState);
 
   startButton.addEventListener("click", () => {
+    resetTranscriptionState(); 
+
     chrome.runtime.sendMessage({
       type: "start-recording-request",
       target: "service-worker",
@@ -56,8 +78,7 @@ if (!document.getElementById("SignSync-wrapper")) {
       setTimeout(() => stopButton.classList.add("visible"), 10);
     }, 300);
   });
- 
-
+  
   stopButton.addEventListener("click", () => {
     setTimeout(() => {
       chrome.runtime.sendMessage({
@@ -80,13 +101,12 @@ if (!document.getElementById("SignSync-wrapper")) {
       dictionaryButton.classList.add("visible");
       microphoneButton.style.display = "block";
       setTimeout(() => startButton.classList.add("visible"), 10);
+      
+      resetTranscriptionState(); 
       setTimeout(() => transcriptionContent.textContent = "", 100);
     }, 300);
     
   });
-
-  const dictionaryButton = popup.shadowRoot.getElementById("dictionaryButton");
-  const microphoneButton = popup.shadowRoot.getElementById("microphoneButton");
 
   dictionaryButton.addEventListener("click", () => {
     if (!startButton.classList.contains("visible") && startButton.style.display == "none") {
@@ -99,8 +119,9 @@ if (!document.getElementById("SignSync-wrapper")) {
     dictionaryPage();
   });
 
-
   microphoneButton.addEventListener("click", () => {
+    resetTranscriptionState(); 
+
     chrome.runtime.sendMessage({
       type: "start-recording-request",
       target: "service-worker",
@@ -158,25 +179,31 @@ async function sendWordsToUnitySequentially(words, iframe) {
   }
 }
 
-
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "transcription-update") {
     const popup = document.getElementById("SignSync-wrapper");
     if (!popup) return;
 
     const shadow = popup.shadowRoot;
-    const transcriptionContent = shadow.getElementById("transcriptionContent");
     const iframe = shadow.querySelector("iframe.unity-iframe");
 
-    chrome.storage.local.get({useGloss: false }, (data) => {
-      const useGloss = data.useGloss;
-      const unityWords = message.dictionaryMessage ? message.word : message.glosa;
-      const transcriptionWords = message.dictionaryMessage ? message.word : (useGloss ? message.glosa : message.original);
+    const { original, glosa, isPartial, dictionaryMessage, word } = message;
 
+    if (dictionaryMessage) {
+      updateTranscriptionDisplay(shadow, word, word);
       if (iframe) {
-        transcriptionContent.textContent = transcriptionWords;
-        sendWordsToUnitySequentially(unityWords.split(/\s+/), iframe);
+        sendWordsToUnitySequentially(word.split(/\s+/), iframe);
       }
-    });
+      return;
+    }
+
+    if (isPartial) {
+      return; 
+    }
+    updateTranscriptionDisplay(shadow, original, glosa);
+
+    if (iframe) {
+      sendWordsToUnitySequentially(glosa.split(/\s+/), iframe);
+    }
   }
 });

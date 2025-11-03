@@ -61,16 +61,16 @@ async function startStreaming(streamId) {
   };
 
   socket.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    if (data.glosa) {
-      chrome.runtime.sendMessage({
-        type: "transcription-update",
-        glosa: data.glosa,
-        original: data.original,
-        isFinal: data.isFinal,
-      });
-    }
-  };
+   const data = JSON.parse(event.data);
+   if (data.glosa) {
+     chrome.runtime.sendMessage({
+       type: "transcription-update",
+       glosa: data.glosa,
+       original: data.original,
+       isPartial: data.isPartial,
+     });
+   }
+ };
 }
 
 function stopStreaming() {
