@@ -7,7 +7,6 @@ function createFooter() {
   transcriptionElement.id = "transcription-text";
   transcriptionElement.className = "transcription-text";
 
-  // HTML atualizado sem os botões de dicionário e microfone
   transcriptionElement.innerHTML = `
     <div class="button-row">
         <div class="left-button">
