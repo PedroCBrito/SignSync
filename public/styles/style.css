@@ -80,7 +80,7 @@
   font-family: 'Futura Bold', sans-serif !important;
   overflow-y: auto;
   transition: height 0.3s ease, padding 0.3s ease;
-  background-color: #c2c1bd;
+  background-color: #f5f2ec;
 }
 
 #SignSync .popup-footer {
@@ -158,6 +158,7 @@
   margin-top: 10px;
   font-family: 'Futura Bold', sans-serif;
   width: 100%;
+  padding: 20px;
 }
 
 #SignSync .appearance-section > *:not(:last-child) {

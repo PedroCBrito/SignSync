@@ -144,13 +144,12 @@ function getQuestionContent() {
     <p>3º Passo: Clique no botão "Começar".</p>
     <p>4º Passo: Abra uma página web com um vídeo</p>
     <p>5º Passo: A ferramenta já está pronta para uso</p>
-    <p>Obs: Recomendamos abaixar para 0.75 a velocidade de vídeos para melhor experiência</p>
   `;
 }
 
 function getDictionaryContent() {
   return `
-    <div>
+    <div style="width:100%; padding:10px;" id="dictionaryBody">
       <input type="text" id="dictionarySearch" placeholder="Buscar palavra..." style="width: 100%; margin-bottom: 10px;" />
       <ul id="dictionaryList" style="max-height: 200px; overflow-y: auto; padding-left: 0;"></ul>
     </div>
