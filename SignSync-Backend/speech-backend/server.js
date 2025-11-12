@@ -151,7 +151,7 @@ wss.on("connection", (ws) => {
 
                 const stability = result.stability || 0;
 
-                if (stability < 0.60) {
+                if (stability < 0.85) {
                     return;
                 }
 
