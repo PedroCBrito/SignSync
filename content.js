@@ -201,36 +201,37 @@ if (window.signSyncInjected) {
       }
     }
 
-    chrome.runtime.onMessage.addListener(
-      (message, sender, sendResponse) => {
-        if (message.type === "transcription-update") {
-          const popup = document.getElementById("SignSync-wrapper");
-          if (!popup) return;
+    function signSyncMessageListener(message, sender, sendResponse) {
+      if (message.type === "transcription-update") {
+        const popup = document.getElementById("SignSync-wrapper");
+        if (!popup) return;
 
-          const shadow = popup.shadowRoot;
-          const iframe = shadow.querySelector("iframe.unity-iframe");
+        const shadow = popup.shadowRoot;
+        const iframe = shadow.querySelector("iframe.unity-iframe");
 
-          const { original, glosa, isPartial, dictionaryMessage, word } =
-            message;
+        const { original, glosa, isPartial, dictionaryMessage, word } = message;
 
-          if (dictionaryMessage) {
-            updateTranscriptionDisplay(shadow, word, word);
-            if (iframe) {
-              sendWordsToUnitySequentially(word.split(/\s+/), iframe);
-            }
-            return;
-          }
-
-          if (isPartial) {
-            return;
-          }
-          updateTranscriptionDisplay(shadow, original, glosa);
-
+        if (dictionaryMessage) {
+          updateTranscriptionDisplay(shadow, word, word);
           if (iframe) {
-            sendWordsToUnitySequentially(glosa.split(/\s+/), iframe);
+            sendWordsToUnitySequentially(word.split(/\s+/), iframe);
           }
+          return;
+        }
+
+        if (isPartial) {
+          return;
+        }
+        updateTranscriptionDisplay(shadow, original, glosa);
+
+        if (iframe) {
+          sendWordsToUnitySequentially(glosa.split(/\s+/), iframe);
         }
       }
-    );
+    }
+
+    chrome.runtime.onMessage.addListener(signSyncMessageListener);
+
+    window.signSyncActiveListener = signSyncMessageListener;
   }
 }
